@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="GA0001_Description" xml:space="preserve">
+    <value>The type '{0}' has specified explicit type constraints, preventing the type '{1}' from being used</value>
+  </data>
+  <data name="GA0001_MessageFormat" xml:space="preserve">
+    <value>The type '{1}' cannot be used as a generic type argument for the type '{0}' in this position</value>
+  </data>
+  <data name="GA0001_Title" xml:space="preserve">
+    <value>Prohibited type argument</value>
+  </data>
+  <data name="GA0002_MessageFormat" xml:space="preserve">
+    <value>The type parameter '{0}' already includes a type constraint rule for the type '{1}'</value>
+  </data>
+  <data name="GA0002_Title" xml:space="preserve">
+    <value>Cannot apply multiple constraint rules for the same type</value>
+  </data>
+  <data name="GA0003_MessageFormat" xml:space="preserve">
+    <value>The type parameter '{0}' already includes the same type constraint rule for the unbound version of the generic type '{1}'</value>
+  </data>
+  <data name="GA0003_Title" xml:space="preserve">
+    <value>Redundant type constraint rule for both a bound and the unbound version of the same type</value>
+  </data>
+  <data name="GA0004_MessageFormat" xml:space="preserve">
+    <value>The type '{0}' is an invalid type argument</value>
+  </data>
+  <data name="GA0004_Title" xml:space="preserve">
+    <value>Cannot assign an invalid type argument as a type constraint</value>
+  </data>
+  <data name="GA0005_MessageFormat" xml:space="preserve">
+    <value>The type '{0}' is prohibited from being used as a type argument for the type parameter '{1}'</value>
+  </data>
+  <data name="GA0005_Title" xml:space="preserve">
+    <value>Type prohibited from generic type constraints in the constraint clause</value>
+  </data>
+  <data name="GA0006_MessageFormat" xml:space="preserve">
+    <value>Prefer declaring the constraint of a single base bound interface type in the constraints clause</value>
+  </data>
+  <data name="GA0006_Title" xml:space="preserve">
+    <value>Constraint only permits usage of one base bound interface type</value>
+  </data>
+  <data name="GA0008_MessageFormat" xml:space="preserve">
+    <value>Redundant base type rule; the given base type '{0}' is sealed</value>
+  </data>
+  <data name="GA0008_Title" xml:space="preserve">
+    <value>Redundant base type rule</value>
+  </data>
+  <data name="GA0009_MessageFormat" xml:space="preserve">
+    <value>The type '{0}' was declared more than once in the same constraint rule</value>
+  </data>
+  <data name="GA0009_Title" xml:space="preserve">
+    <value>Duplicate type rule</value>
+  </data>
+  <data name="GA0010_MessageFormat" xml:space="preserve">
+    <value>Redundant explicit type prohibition; the type '{0}' is already prohibited based on the system's rules</value>
+  </data>
+  <data name="GA0010_Title" xml:space="preserve">
+    <value>Redundant explicit type prohibition</value>
+  </data>
+  <data name="GA0011_MessageFormat" xml:space="preserve">
+    <value>Redundant explicit type permission; the type '{0}' is already permitted based on the system's rules</value>
+  </data>
+  <data name="GA0011_Title" xml:space="preserve">
+    <value>Redundant explicit type permission</value>
+  </data>
+  <data name="GA0012_MessageFormat" xml:space="preserve">
+    <value>Usage of the attribute requires that at least one type is permitted</value>
+  </data>
+  <data name="GA0012_Title" xml:space="preserve">
+    <value>Invalid usage of OnlyPermitSpecifiedTypesAttribute</value>
+  </data>
+  <data name="GA0013_MessageFormat" xml:space="preserve">
+    <value>The type parameter '{0}' only has one explicitly specified permitted type argument (did you forget to mark the permitted type as base?)</value>
+  </data>
+  <data name="GA0013_Title" xml:space="preserve">
+    <value>Only one type is explicitly permitted</value>
+  </data>
+  <data name="GA0014_MessageFormat" xml:space="preserve">
+    <value>Redundant usage of the attribute; the element '{0}' cannot inherit other types</value>
+  </data>
+  <data name="GA0014_Title" xml:space="preserve">
+    <value>Redundant usage of InheritBaseTypeUsageConstraintsAttribute</value>
+  </data>
+  <data name="GA0015_MessageFormat" xml:space="preserve">
+    <value>Redundant usage of the attribute; the type '{0}' does not inherit other generic types</value>
+  </data>
+  <data name="GA0015_Title" xml:space="preserve">
+    <value>Redundant usage of InheritBaseTypeUsageConstraintsAttribute</value>
+  </data>
+  <data name="GA0016_MessageFormat" xml:space="preserve">
+    <value>Redundant usage of the attribute; the type parameter '{0}' is not used in any of the base types</value>
+  </data>
+  <data name="GA0016_Title" xml:space="preserve">
+    <value>Redundant usage of InheritBaseTypeUsageConstraintsAttribute</value>
+  </data>
+  <data name="GA0017_Description" xml:space="preserve">
+    <value>The explicit type constraints for generic type parameter '{0}' do not match those of type parameter '{1}'</value>
+  </data>
+  <data name="GA0017_MessageFormat" xml:space="preserve">
+    <value>The type parameter '{1}' cannot be used as a generic type argument for the type '{0}' in this position</value>
+  </data>
+  <data name="GA0017_Title" xml:space="preserve">
+    <value>Type argument explicit type constraint mismatch</value>
+  </data>
+  <data name="GA0019_MessageFormat" xml:space="preserve">
+    <value>The given type parameter name '{0}' does not reflect any locally declared type parameter</value>
+  </data>
+  <data name="GA0019_Title" xml:space="preserve">
+    <value>Invalid type parameter name</value>
+  </data>
+  <data name="GA0020_MessageFormat" xml:space="preserve">
+    <value>The type constraint inheritance causes a recursion with the following path:\n{0}</value>
+  </data>
+  <data name="GA0020_Title" xml:space="preserve">
+    <value>Recursive inheritance was detected</value>
+  </data>
+  <data name="GA0021_MessageFormat" xml:space="preserve">
+    <value>A type parameter may not inherit type constraints from itself</value>
+  </data>
+  <data name="GA0021_Title" xml:space="preserve">
+    <value>Cannot inherit from the same type parameter</value>
+  </data>
+  <data name="GA0022_MessageFormat" xml:space="preserve">
+    <value>Type constraint inheritance results in a rule collision</value>
+  </data>
+  <data name="GA0022_Title" xml:space="preserve">
+    <value>Conflicting inherited type constraint rules</value>
+  </data>
+  <data name="GA0023_MessageFormat" xml:space="preserve">
+    <value>Only non-generic interfaces can be type constraint profiles or type constraint profile groups</value>
+  </data>
+  <data name="GA0023_Title" xml:space="preserve">
+    <value>Invalid type constraint profile type declaration</value>
+  </data>
+  <data name="GA0024_MessageFormat" xml:space="preserve">
+    <value>Type constraint profile group interfaces should not contain any non-static members</value>
+  </data>
+  <data name="GA0024_Title" xml:space="preserve">
+    <value>Type constaint profile group type also implements other behavior</value>
+  </data>
+  <data name="GA0025_MessageFormat" xml:space="preserve">
+    <value>Type constraint profile interfaces should not be inherited by types unrelated to type constraint profiles, or vice versa (did you forget to use the TypeConstraintProfileAttribute?)</value>
+  </data>
+  <data name="GA0025_Title" xml:space="preserve">
+    <value>Mixed type constraint profile interfaces with irrelevant ones in inheritance</value>
+  </data>
+  <data name="GA0026_MessageFormat" xml:space="preserve">
+    <value>The given type does not represent a type constraint profile definition</value>
+  </data>
+  <data name="GA0026_Title" xml:space="preserve">
+    <value>Invalid type constraint profile type</value>
+  </data>
+  <data name="GA0027_MessageFormat" xml:space="preserve">
+    <value>The given type does not represent a type constraint profile group definition</value>
+  </data>
+  <data name="GA0027_Title" xml:space="preserve">
+    <value>Invalid type constraint profile group type</value>
+  </data>
+  <data name="GA0028_MessageFormat" xml:space="preserve">
+    <value>Another type constraint profile of the same distinct group was used for inheritance</value>
+  </data>
+  <data name="GA0028_Title" xml:space="preserve">
+    <value>Conflicting profiles of the same distinct profile group</value>
+  </data>
+  <data name="GA0029_MessageFormat" xml:space="preserve">
+    <value>An interface can only be declared as a type constraint profile or a type constraint profile group</value>
+  </data>
+  <data name="GA0029_Title" xml:space="preserve">
+    <value>Invalid mutually exclusive declarations of the interface</value>
+  </data>
+  <data name="GA0030_MessageFormat" xml:space="preserve">
+    <value>Type constraint-related attributes are assigned at the given interface, which is not declared as a type constraint profile (did you forget to use the TypeConstraintProfileAttribute?)</value>
+  </data>
+  <data name="GA0030_Title" xml:space="preserve">
+    <value>Type constraint attributes used on non-profile interface</value>
+  </data>
+</root>

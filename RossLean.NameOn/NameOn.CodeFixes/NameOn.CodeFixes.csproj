@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <IsPackable>false</IsPackable>
+    <Version>0.1.1</Version>
+    <RootNamespace>RossLean.NameOn</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
+    <PackageReference Include="RoseLynn.CodeFixes" Version="0.6.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NameOn\NameOn.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CodeFixResources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="CodeFixResources.resx" />
+    <EmbeddedResource Update="CodeFixResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="CodeFixResources.Designer.cs" />
+  </ItemGroup>
+
+</Project>

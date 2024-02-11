@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <RepositoryUrl>https://github.com/Rekkonnect/Smarttributes</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Label="README reference">
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup Label="RoseLynn">
+    <PackageReference Include="RoseLynn.VS2019" Version="0.6.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="RoseLynn.Analyzers.VS2019" Version="0.6.1" PrivateAssets="all" GeneratePathProperty="true" />
+
+    <None Include="$(PKGRoseLynn_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
+    <None Include="$(PKGRoseLynn_Analyzers_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
+  </ItemGroup>
+
+  <ItemGroup Label="Microsoft.CodeAnalysis">
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Output">
+    <TfmSpecificPackageFile Include="$(OutputPath)\Smarttributes.dll" PackagePath="analyzers/dotnet/cs" />
+    <TfmSpecificPackageFile Include="$(OutputPath)\Smarttributes.Core.dll" PackagePath="analyzers/dotnet/cs" />
+  </ItemGroup>
+
+</Project>

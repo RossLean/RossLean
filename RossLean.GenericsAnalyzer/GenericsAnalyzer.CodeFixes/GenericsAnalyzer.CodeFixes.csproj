@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>RossLean.GenericsAnalyzer</RootNamespace>
+    <Version>1.3.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RoseLynn" Version="0.6.4.1" />
+    <PackageReference Include="RoseLynn.CodeFixes" Version="0.6.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GenericsAnalyzer\GenericsAnalyzer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CodeFixResources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="CodeFixResources.resx" />
+    <EmbeddedResource Update="CodeFixResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="CodeFixResources.Designer.cs" />
+  </ItemGroup>
+
+</Project>
