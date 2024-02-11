@@ -2,7 +2,6 @@
 
 namespace RossLean.GenericsAnalyzer.Test.PermittedTypeArguments;
 
-
 public sealed class GA0022_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
 {
     [Test]

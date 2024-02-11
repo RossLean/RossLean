@@ -4,7 +4,7 @@ using RossLean.GenericsAnalyzer.AnalysisTestsBase.Resources;
 using RossLean.GenericsAnalyzer.Core;
 using System.Collections.Immutable;
 
-namespace RossLean.GenericsAnalyzer.AnalysisTestsBase.Verifiers;
+namespace RossLean.GenericsAnalyzer.AnalysisTestsBase.Helpers;
 
 public static class GenericsAnalyzerMetadataReferences
 {

@@ -64,7 +64,7 @@ public class ConstraintClauseTypeConstraintPlacer : GACodeFixProvider
         var originalArgumentNodeSpan = syntaxNode.Span;
         var originalMemberDeclarationSpan = memberDeclarationSyntax.Span;
 
-        // Add the new constaint clause to the document
+        // Add the new constraint clause to the document
         if (createdNewConstraintClause)
         {
             // Completely decorative; add the new constraint clause for the type parameter right before the one that succeeds it
@@ -86,8 +86,8 @@ public class ConstraintClauseTypeConstraintPlacer : GACodeFixProvider
             // Unfortunately, the resulting generated node is not properly formatted, since declaring generic type parameters
             // with attributes in multiple lines is not expected
             var newConstraintClauseList = constraintClauses.Insert(insertionIndex, newConstraintClause);
-            var replacedConstriantClauseNode = memberDeclarationSyntax.WithConstraintClauses(newConstraintClauseList);
-            document = await document.ReplaceNodeAsync(memberDeclarationSyntax, replacedConstriantClauseNode, cancellationToken);
+            var replacedConstraintClauseNode = memberDeclarationSyntax.WithConstraintClauses(newConstraintClauseList);
+            document = await document.ReplaceNodeAsync(memberDeclarationSyntax, replacedConstraintClauseNode, cancellationToken);
         }
         else
             document = await document.ReplaceNodeAsync(oldConstraintClause, newConstraintClause, cancellationToken);
@@ -104,12 +104,15 @@ public class ConstraintClauseTypeConstraintPlacer : GACodeFixProvider
         // Also remove the remaining OnlyPermitSpecifiedTypes if there are no other type constraint attributes
         var difference = await document.LengthDifferenceFrom(oldDocument, cancellationToken);
 
-        var newMemberDeclarationNode = root.FindNode(new TextSpan(originalMemberDeclarationSpan.Start, originalMemberDeclarationSpan.Length + difference)) as MemberDeclarationSyntax;
+        var declarationTextSpan = new TextSpan(originalMemberDeclarationSpan.Start, originalMemberDeclarationSpan.Length + difference);
+        var newMemberDeclarationNode = root.FindNode(declarationTextSpan) as MemberDeclarationSyntax;
         var typeParameters = newMemberDeclarationNode.GetTypeParameterList().Parameters;
         var newDocumentTypeParameter = typeParameters.First(t => t.Identifier.ValueText == typeParameter.Identifier.ValueText);
 
-        var remainingConstraintAttributes = newDocumentTypeParameter.AttributeLists.SelectMany(list => list.Attributes)
-            .Where(a => a.IsGenericConstraintAttribute(semanticModel)).ToArray();
+        var remainingConstraintAttributes = newDocumentTypeParameter.AttributeLists
+            .SelectMany(list => list.Attributes)
+            .Where(a => a.IsGenericConstraintAttribute(semanticModel))
+            .ToArray();
 
         var remainingPermissionConstraintAttributes = remainingConstraintAttributes.Where(a => a.GetAttributeIdentifierString().StartsWith("Permitted"));
 

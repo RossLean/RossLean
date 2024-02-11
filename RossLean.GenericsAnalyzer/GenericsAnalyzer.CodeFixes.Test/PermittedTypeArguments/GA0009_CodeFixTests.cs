@@ -1,12 +1,12 @@
 ﻿using NUnit.Framework;
+using RossLean.Common.Test;
 
 namespace RossLean.GenericsAnalyzer.CodeFixes.Test.PermittedTypeArguments;
 
 public class GA0009_CodeFixTests : DuplicateAttributeArgumentRemoverCodeFixTests
 {
-    // TODO: Find a way to test applying the code fix on a specified diagnostic
     [Test]
-    public void ConflictingConstraintsCodeFix()
+    public void ConflictingConstraintsCodeFix_0()
     {
         var testCode =
 @"
@@ -24,7 +24,7 @@ class C
 }
 ";
 
-        var fixedCode0 =
+        var fixedCode =
 @"
 #pragma warning disable GA0010
 #pragma warning disable GA0011
@@ -39,7 +39,30 @@ class C
 }
 ";
 
-        var fixedCode1 =
+        TestCodeFixWithUsings(testCode, fixedCode, 0);
+    }
+
+    [Test]
+    [Ignore(TestIgnoreStrings.SpecificDiagnosticIndexNotSupported)]
+    public void ConflictingConstraintsCodeFix_1()
+    {
+        var testCode =
+@"
+#pragma warning disable GA0010
+#pragma warning disable GA0011
+
+class C
+<
+    [PermittedTypes({|*:typeof(int)|}, typeof(long), typeof(ulong))]
+    [PermittedTypes({|*:typeof(int)|})]
+    [OnlyPermitSpecifiedTypes]
+    T
+>
+{
+}
+";
+
+        var fixedCode =
 @"
 #pragma warning disable GA0010
 #pragma warning disable GA0011
@@ -55,11 +78,11 @@ class C
 }
 ";
 
-        TestCodeFixWithUsings(testCode, fixedCode0, 0);
-        //TestCodeFixWithUsings(testCode, fixedCode1, 1);
+        TestCodeFixWithUsings(testCode, fixedCode, 1);
     }
+
     [Test]
-    public void MultipleConflictingConstraintsCodeFix()
+    public void MultipleConflictingConstraintsCodeFix_0()
     {
         var testCode =
 @"
@@ -78,7 +101,7 @@ class C
 }
 ";
 
-        var fixedCode0 =
+        var fixedCode =
 @"
 #pragma warning disable GA0010
 #pragma warning disable GA0011
@@ -93,7 +116,31 @@ class C
 }
 ";
 
-        var fixedCode1 =
+        TestCodeFixWithUsings(testCode, fixedCode, 0);
+    }
+
+    [Test]
+    [Ignore(TestIgnoreStrings.SpecificDiagnosticIndexNotSupported)]
+    public void MultipleConflictingConstraintsCodeFix_1()
+    {
+        var testCode =
+@"
+#pragma warning disable GA0010
+#pragma warning disable GA0011
+
+class C
+<
+    [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
+    [PermittedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+    [PermittedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+    [OnlyPermitSpecifiedTypes]
+    T
+>
+{
+}
+";
+
+        var fixedCode =
 @"
 #pragma warning disable GA0010
 #pragma warning disable GA0011
@@ -109,9 +156,9 @@ class C
 }
 ";
 
-        TestCodeFixWithUsings(testCode, fixedCode0, 0);
-        //TestCodeFixWithUsings(testCode, fixedCode1, 1);
+        TestCodeFixWithUsings(testCode, fixedCode, 1);
     }
+
     [Test]
     public void MultipleClassesConflictingConstraintsCodeFix()
     {
@@ -165,6 +212,7 @@ class D
 
         TestCodeFixWithUsings(testCode, fixedCode, 0);
     }
+
     [Test]
     public void ExtraAttributesConflictingConstraintsCodeFix()
     {

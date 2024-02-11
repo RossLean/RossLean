@@ -312,7 +312,7 @@ public class TypeConstraintSystem
         // Why did I overengineer this again?
         /// <summary>Adds a profile's distinct groups to the dictionary, if it is not already added.</summary>
         /// <param name="profile">The profile whose distinct groups to add to the dictionary, linking them to the profile.</param>
-        /// <returns><see langword="true"/> if all distinct groups were sucessfully added and are unique, otherwise <see langword="false"/>. In other words, <see langword="false"/> determines that a distinct group is used by more than one profile.</returns>
+        /// <returns><see langword="true"/> if all distinct groups were successfully added and are unique, otherwise <see langword="false"/>. In other words, <see langword="false"/> determines that a distinct group is used by more than one profile.</returns>
         public bool AddProfile(TypeConstraintProfileInfo profile)
         {
             if (usedProfiles.Contains(profile))
@@ -334,7 +334,7 @@ public class TypeConstraintSystem
             bool stillDistinct = !distinctGroupUsages.TryGetValue(distinctGroup, out var usageList);
             if (stillDistinct)
             {
-                usageList = new List<TypeConstraintProfileInfo>();
+                usageList = new();
                 distinctGroupUsages.Add(distinctGroup, usageList);
             }
 
@@ -355,13 +355,12 @@ public class TypeConstraintSystem
         }
         public IEnumerable<TypeConstraintProfileInfo> GetDistinctGroupUsageProfiles(TypeConstraintProfileGroupInfo distinctGroup) => distinctGroupUsages[distinctGroup];
 
-        // Replace SelectMany with Flatten
         public ISet<INamedTypeSymbol> GetCollidingDistinctGroupProfileUsages()
         {
             return new HashSet<INamedTypeSymbol>(
                 distinctGroupUsages.Values
                     .Where(list => list.Count > 1)
-                    .SelectMany(list => list)
+                    .Flatten()
                     .Select(info => info.ProfileDeclaringInterface),
                 SymbolEqualityComparer.Default);
         }
@@ -383,13 +382,17 @@ public class TypeConstraintSystem
         // Flags will be accordingly adjusted for the new features' needs
         public bool OnlyPermitSpecifiedTypes
         {
-            get => finalSystem.OnlyPermitSpecifiedTypes || inheritedTypeParameterSystems.OnlyPermitSpecifiedTypes || inheritedProfileSystems.OnlyPermitSpecifiedTypes;
+            get => finalSystem.OnlyPermitSpecifiedTypes
+                || inheritedTypeParameterSystems.OnlyPermitSpecifiedTypes
+                || inheritedProfileSystems.OnlyPermitSpecifiedTypes;
+
             set => finalSystem.OnlyPermitSpecifiedTypes = value;
         }
-        public bool HasNoPermittedTypes => OnlyPermitSpecifiedTypes
-                                        && finalSystem.HasNoExplicitlyPermittedTypes
-                                        && inheritedTypeParameterSystems.HasNoExplicitlyPermittedTypes
-                                        && inheritedProfileSystems.HasNoExplicitlyPermittedTypes;
+        public bool HasNoPermittedTypes
+            => OnlyPermitSpecifiedTypes
+            && finalSystem.HasNoExplicitlyPermittedTypes
+            && inheritedTypeParameterSystems.HasNoExplicitlyPermittedTypes
+            && inheritedProfileSystems.HasNoExplicitlyPermittedTypes;
 
         public Builder(ITypeParameterSymbol typeParameter)
         {
@@ -457,9 +460,10 @@ public class TypeConstraintSystem
 
             affectedInheritedSystems.OnlyPermitSpecifiedTypes |= baseSystemBuilder.OnlyPermitSpecifiedTypes;
 
-            bool independent = affectedInheritedSystems.typeConstraintRules.TryAddPreserveRange(baseSystemBuilder.inheritedTypeParameterSystems.typeConstraintRules);
-            independent &= affectedInheritedSystems.typeConstraintRules.TryAddPreserveRange(baseSystemBuilder.inheritedProfileSystems.typeConstraintRules);
-            independent &= affectedInheritedSystems.typeConstraintRules.TryAddPreserveRange(baseSystemBuilder.finalSystem.typeConstraintRules);
+            // Prefer & over && to always add the type constraint rules
+            bool independent = affectedInheritedSystems.typeConstraintRules.TryAddPreserveRange(baseSystemBuilder.inheritedTypeParameterSystems.typeConstraintRules)
+                & affectedInheritedSystems.typeConstraintRules.TryAddPreserveRange(baseSystemBuilder.inheritedProfileSystems.typeConstraintRules)
+                & affectedInheritedSystems.typeConstraintRules.TryAddPreserveRange(baseSystemBuilder.finalSystem.typeConstraintRules);
             if (!independent)
                 affectedInheritedSystems.systemDiagnostics.RegisterConflictingInheritedSymbol(baseType);
 
@@ -468,7 +472,11 @@ public class TypeConstraintSystem
             return independent;
         }
 
-        public void Add(TypeConstraintRule rule, params ITypeSymbol[] types) => Add(rule, (IEnumerable<ITypeSymbol>)types);
+        public void Add(TypeConstraintRule rule, params ITypeSymbol[] types)
+        {
+            Add(rule, (IEnumerable<ITypeSymbol>)types);
+        }
+
         public void Add(TypeConstraintRule rule, IEnumerable<ITypeSymbol> types)
         {
             if (buildState.HasFlag(SystemBuildState.FinalizedBase))
@@ -483,8 +491,14 @@ public class TypeConstraintSystem
                     continue;
 
                 if (TypeParameter != null)
-                    if (systemDiagnostics.ConditionallyRegisterConstrainedSubstitutionType(TypeParameter, t, rule.TypeReferencePoint is TypeConstraintReferencePoint.BaseType))
+                {
+                    var registered = systemDiagnostics.ConditionallyRegisterConstrainedSubstitutionType(
+                        TypeParameter, t,
+                        rule.TypeReferencePoint is TypeConstraintReferencePoint.BaseType);
+
+                    if (registered)
                         continue;
+                }
 
                 if (typeConstraintRules.ContainsKey(t))
                 {
@@ -538,8 +552,9 @@ public class TypeConstraintSystem
             finalSystem.typeConstraintRules.TryAddPreserveRange(inheritedTypeParameterSystems.typeConstraintRules);
             finalSystem.typeConstraintRules.TryAddPreserveRange(inheritedProfileSystems.typeConstraintRules);
             // The flags system will be improved:tm:
-            finalSystem.OnlyPermitSpecifiedTypes |= inheritedTypeParameterSystems.OnlyPermitSpecifiedTypes
-                                                 || inheritedProfileSystems.OnlyPermitSpecifiedTypes;
+            finalSystem.OnlyPermitSpecifiedTypes
+                |= inheritedTypeParameterSystems.OnlyPermitSpecifiedTypes
+                || inheritedProfileSystems.OnlyPermitSpecifiedTypes;
 
             // The system diagnostics for base type systems are not copied over since they will have already appeared
 
@@ -557,8 +572,8 @@ public class TypeConstraintSystem
             FinalizedInheritedProfiles = 1 << 2,
 
             FinalizedWhole = FinalizedBase
-                           | FinalizedInheritedTypeParameters
-                           | FinalizedInheritedProfiles,
+                | FinalizedInheritedTypeParameters
+                | FinalizedInheritedProfiles,
         }
     }
 

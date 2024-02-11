@@ -12,9 +12,11 @@ public abstract class BaseCodeFixTests<TAnalyzer, TCodeFix> : BaseCodeFixDiagnos
     where TAnalyzer : DiagnosticAnalyzer, new()
     where TCodeFix : GACodeFixProvider, new()
 {
-    protected sealed override DiagnosticDescriptorStorageBase DiagnosticDescriptorStorage => GADiagnosticDescriptorStorage.Instance;
+    protected sealed override DiagnosticDescriptorStorageBase DiagnosticDescriptorStorage
+        => GADiagnosticDescriptorStorage.Instance;
 
-    protected sealed override async Task VerifyCodeFixAsync(string markupCode, string expected, int codeActionIndex)
+    protected sealed override async Task VerifyCodeFixAsync(
+        string markupCode, string expected, int codeActionIndex)
     {
         await CSharpCodeFixVerifier<TAnalyzer, TCodeFix>.VerifyCodeFixAsync(markupCode, expected, codeActionIndex);
     }
@@ -25,7 +27,8 @@ public abstract class BaseCodeFixTests<TAnalyzer, TCodeFix> : BaseCodeFixDiagnos
         Assert.IsNotNull(new TCodeFix().CodeFixTitle);
     }
 
-    public void TestCodeFixWithUsings(string markupCode, string expected, int codeActionIndex = 0)
+    protected void TestCodeFixWithUsings(
+        string markupCode, string expected, int codeActionIndex = 0)
     {
         TestCodeFix(GAUsingsProvider.Instance.WithUsings(markupCode), GAUsingsProvider.Instance.WithUsings(expected), codeActionIndex);
     }

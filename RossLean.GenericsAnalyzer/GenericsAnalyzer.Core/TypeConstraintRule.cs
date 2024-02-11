@@ -14,15 +14,15 @@ public struct TypeConstraintRule : IEquatable<TypeConstraintRule>
     public ConstraintRule Rule { get; set; }
     public TypeConstraintReferencePoint TypeReferencePoint { get; set; }
 
-    public TypeConstraintRule(ConstraintRule rule, TypeConstraintReferencePoint referecePoint)
+    public TypeConstraintRule(ConstraintRule rule, TypeConstraintReferencePoint referencePoint)
     {
         Rule = rule;
-        TypeReferencePoint = referecePoint;
+        TypeReferencePoint = referencePoint;
     }
     public TypeConstraintRule(TypeConstraintRule other)
         : this(other.Rule, other.TypeReferencePoint) { }
 
-    public bool FullySatisfies(TypeConstraintRule other)
+    public readonly bool FullySatisfies(TypeConstraintRule other)
     {
         if (this == other)
             return true;
@@ -39,12 +39,12 @@ public struct TypeConstraintRule : IEquatable<TypeConstraintRule>
     public static bool operator ==(TypeConstraintRule left, TypeConstraintRule right) => left.Equals(right);
     public static bool operator !=(TypeConstraintRule left, TypeConstraintRule right) => !left.Equals(right);
 
-    public bool Equals(TypeConstraintRule other) => Rule == other.Rule && TypeReferencePoint == other.TypeReferencePoint;
-    public override bool Equals(object obj) => obj is TypeConstraintRule rule && Equals(rule);
+    public readonly bool Equals(TypeConstraintRule other) => Rule == other.Rule && TypeReferencePoint == other.TypeReferencePoint;
+    public override readonly bool Equals(object obj) => obj is TypeConstraintRule rule && Equals(rule);
 
-    public override int GetHashCode()
+    public override readonly int GetHashCode()
     {
         return TypeReferencePoint.GetHashCode() | Rule.GetHashCode() << sizeof(TypeConstraintReferencePoint) * 8;
     }
-    public override string ToString() => $"{Rule} {TypeReferencePoint}";
+    public override readonly string ToString() => $"{Rule} {TypeReferencePoint}";
 }

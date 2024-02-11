@@ -24,7 +24,7 @@ public class NameOfRestrictionAssociation
     {
         // Not overengineering this today
         public static readonly IdentifiableSymbolKind[] DistinctKinds =
-        {
+        [
             Namespace,
 
             // Types
@@ -46,14 +46,12 @@ public class NameOfRestrictionAssociation
             Property,
             Event,
             Method,
-        };
+        ];
         private static readonly IdentifiableSymbolKind[] globalFlags =
-        {
+        [
             None,
             Alias,
-        };
-
-
+        ];
 
         private static readonly RestrictionsDictionary template;
 

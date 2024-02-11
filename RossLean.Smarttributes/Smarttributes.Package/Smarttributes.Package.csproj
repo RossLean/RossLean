@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup Label="RoseLynn">
-    <PackageReference Include="RoseLynn.VS2019" Version="0.6.1" PrivateAssets="all" GeneratePathProperty="true" />
-    <PackageReference Include="RoseLynn.Analyzers.VS2019" Version="0.6.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="RoseLynn.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="RoseLynn.Analyzers.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
 
     <None Include="$(PKGRoseLynn_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
     <None Include="$(PKGRoseLynn_Analyzers_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using RossLean.Common.Test;
 
 namespace RossLean.NameOn.Test.NameOfUsage;
 
@@ -44,7 +45,7 @@ class Program
     }
 
     [Test]
-    [Ignore("Not yet implemented.")]
+    [Ignore(TestIgnoreStrings.NotYetImplemented)]
     public void FunctionArgumentNameOf()
     {
         var testCode =
@@ -67,7 +68,7 @@ class Program
     }
 
     [Test]
-    [Ignore("Not yet implemented.")]
+    [Ignore(TestIgnoreStrings.NotYetImplemented)]
     public void DelegateInvocationArgumentNameOf()
     {
         var testCode =
@@ -88,7 +89,7 @@ class Program
     }
 
     [Test]
-    [Ignore("Not yet implemented.")]
+    [Ignore(TestIgnoreStrings.NotYetImplemented)]
     public void ConstructorAssignmentNameOf()
     {
         var testCode =
@@ -113,7 +114,7 @@ class C
     }
 
     [Test]
-    [Ignore("Not yet implemented.")]
+    [Ignore(TestIgnoreStrings.NotYetImplemented)]
     public void ConstructorInvocationNameOf()
     {
         var testCode =
@@ -162,7 +163,7 @@ class Program
     }
 
     [Test]
-    [Ignore("Not yet implemented.")]
+    [Ignore(TestIgnoreStrings.NotYetImplemented)]
     public void DelegateReturnNameOf()
     {
         var testCode =

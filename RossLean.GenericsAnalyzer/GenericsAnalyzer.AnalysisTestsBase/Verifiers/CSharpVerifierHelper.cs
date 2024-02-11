@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
+using RossLean.GenericsAnalyzer.AnalysisTestsBase.Helpers;
 using System;
 using System.Collections.Immutable;
 

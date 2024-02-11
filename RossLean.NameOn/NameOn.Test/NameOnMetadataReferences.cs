@@ -3,7 +3,7 @@ using RoseLynn;
 using RossLean.NameOn.Core;
 using System.Collections.Immutable;
 
-namespace RossLean.NameOn.Test.Verifiers;
+namespace RossLean.NameOn.Test;
 
 public static class NameOnMetadataReferences
 {

@@ -2,7 +2,6 @@
 
 namespace RossLean.GenericsAnalyzer.CodeFixes.Test.PermittedTypeArguments;
 
-
 [Ignore("Resulting document's indentation is somehow altered during assertion")]
 public class GA0008_CodeFixTests : RedundantBaseTypeRuleConverterCodeFixTests
 {

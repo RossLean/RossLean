@@ -305,7 +305,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
         var constraints = new GenericTypeConstraintInfo.Builder(declaringSymbol);
         genericNames.SetBuilder(declaringSymbol, constraints);
 
-        var typeConstraintInheritAttibuteData = new List<AttributeData>();
+        var typeConstraintInheritAttributeData = new List<AttributeData>();
 
         for (int i = 0; i < typeParameters.Length; i++)
         {
@@ -442,7 +442,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
             bool ProcessInheritTypeConstraintsAttribute(AttributeData attributeData, AttributeSyntax attributeNode)
             {
                 // This will be analyzed after the first iteration to ensure all constraints are properly loaded
-                typeConstraintInheritAttibuteData.Add(attributeData);
+                typeConstraintInheritAttributeData.Add(attributeData);
                 return true;
             }
 
@@ -555,7 +555,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                 }
             }
         }
-        // Analyze the inherited type constaints from local type parameters
+        // Analyze the inherited type constraints from local type parameters
         AnalyzeInheritedTypeConstraints();
         genericNames.FinalizeGenericSymbol(declaringSymbol);
 
@@ -566,12 +566,12 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
 
             foreach (var p in typeParameters)
             {
-                inheritMap.Add(p, new TypeParameterAttributeArgumentCorrelationDictionary());
+                inheritMap.Add(p, new());
                 typeParameterInheritanceArguments.Add(p, SyntaxFactory.SeparatedList<AttributeArgumentSyntax>());
             }
 
             // Create inherit map from attribute data
-            foreach (var attributeData in typeConstraintInheritAttibuteData)
+            foreach (var attributeData in typeConstraintInheritAttributeData)
             {
                 if (attributeData is null)
                     return;
@@ -763,6 +763,10 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
     private bool ProcessAttribute(TypeConstraintSystem.Builder systemBuilder, AttributeData attributeData, AttributeProcessor attributeProcessor)
     {
         if (!IsNonProfileTypeConstraintAttribute(attributeData))
+            return false;
+
+        // Avoid encountering mysterious errors when binding fails
+        if (attributeData.AttributeClass is IErrorTypeSymbol)
             return false;
 
         // Using switch for when the other constraint attributes come into play

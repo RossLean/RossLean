@@ -1,0 +1,11 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Inspired by dotnet/roslyn -- primarily for the spelling exclusion path
+
+# top-most EditorConfig file
+root = true
+
+# Don't use tabs for indentation.
+[*]
+indent_style = space
+spelling_exclusion_path = SpellingExclusions.dic

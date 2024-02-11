@@ -148,7 +148,7 @@ public class NameOfUsageAnalyzer : CSharpDiagnosticAnalyzer
         foreach (var nameofOperation in nameofOperations)
         {
             var namedOperationNode = nameofOperation.Argument.Syntax;
-            var alias = semanticModel.GetAliasOrSymbolInfo(namedOperationNode, context.CancellationToken);
+            var alias = semanticModel.GetAliasOrSymbolInfo(namedOperationNode, context.CancellationToken)!;
             var symbolKind = alias.GetIdentifiableSymbolKind();
 
             var restrictions = symbolRestrictionDictionary[symbolKind];
@@ -163,7 +163,10 @@ public class NameOfUsageAnalyzer : CSharpDiagnosticAnalyzer
             if (!state.ValidForRestrictions(restrictions))
             {
                 var diagnosticCreator = GetDiagnosticCreator(restrictions);
-                context.ReportDiagnostic(diagnosticCreator?.Invoke(node, substitutedSymbol, symbolKinds));
+                var diagnostic = diagnosticCreator?.Invoke(node, substitutedSymbol, symbolKinds);
+
+                if (diagnostic is not null)
+                    context.ReportDiagnostic(diagnostic);
             }
         }
     }

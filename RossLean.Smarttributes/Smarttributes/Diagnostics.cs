@@ -162,12 +162,12 @@ internal static class Diagnostics
     }
 
     private static readonly FunctionTargets[] validFunctionTargets =
-    {
+    [
         FunctionTargets.Method,
         FunctionTargets.LocalMethod,
         FunctionTargets.Lambda,
         FunctionTargets.AnonymousMethod,
-    };
+    ];
 
     private static string GetFunctionTargetStringRepresentation(FunctionTargets functionTarget)
     {

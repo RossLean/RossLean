@@ -2,7 +2,6 @@
 
 namespace RossLean.GenericsAnalyzer.CodeFixes.Test.PermittedTypeArguments;
 
-
 public class GA0015_CodeFixTests : RedundantAttributeRemoverCodeFixTests
 {
     [Test]
