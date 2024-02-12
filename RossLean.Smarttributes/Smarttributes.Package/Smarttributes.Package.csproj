@@ -2,8 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
 
-    <RepositoryUrl>https://github.com/Rekkonnect/Smarttributes</RepositoryUrl>
+  <PropertyGroup>
+    <PackageId>Smarttributes</PackageId>
+    <Authors>Alex Kalfakakos,RossLean</Authors>
+    <PackageVersion>1.0.0-rc1</PackageVersion>
+    <Version>1.0.0-rc1</Version>
+    <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.Smarttributes</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>A Roslyn analyzer that introduces stronger constraints for attributes.</Description>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Copyright>© 2023-2024 Alex Kalfakakos, © 2024 RossLean</Copyright>
+    <PackageTags>roslyn, analyzer, attributes, constraints, restrictions</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

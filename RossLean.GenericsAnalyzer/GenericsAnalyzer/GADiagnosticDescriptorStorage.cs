@@ -8,7 +8,7 @@ internal sealed class GADiagnosticDescriptorStorage : DiagnosticDescriptorStorag
 {
     public static readonly GADiagnosticDescriptorStorage Instance = new();
 
-    protected override string BaseRuleDocsURI => "https://github.com/Rekkonnect/GenericsAnalyzer/blob/master/docs/rules";
+    protected override string BaseRuleDocsURI => "https://github.com/RossLean/RossLean/tree/master/RossLean.GenericsAnalyzer/docs/rules";
     protected override string DiagnosticIDPrefix => "GA";
     protected override ResourceManager ResourceManager => Resources.ResourceManager;
 

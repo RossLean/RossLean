@@ -7,8 +7,8 @@ namespace RossLean.Smarttributes;
 
 internal static class Diagnostics
 {
-    private static SmarttributesDiagnosicDescriptorStorage Storage
-        => SmarttributesDiagnosicDescriptorStorage.Instance;
+    private static SmarttributesDiagnosticDescriptorStorage Storage
+        => SmarttributesDiagnosticDescriptorStorage.Instance;
 
     #region Creators
     public static Diagnostic CreateSMTTR0001(

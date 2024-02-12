@@ -9,19 +9,23 @@
 
   <PropertyGroup>
     <PackageId>NameOn</PackageId>
-    <PackageVersion>0.1.1</PackageVersion>
-    <Version>0.1.1</Version>
-    <Authors>Alex Kalfakakos</Authors>
-    <RepositoryUrl>https://github.com/Rekkonnect/NameOn</RepositoryUrl>
+    <Authors>Alex Kalfakakos,RossLean</Authors>
+    <PackageVersion>0.1.2-rc1</PackageVersion>
+    <Version>0.1.2-rc1</Version>
+    <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.NameOn</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>A Roslyn analyzer providing the ability to control usage of nameof.</Description>
-    <PackageReleaseNotes>- NAME0001/2/3/4 diagnostics may now be reported on on return statements</PackageReleaseNotes>
-    <Copyright>© 2021, Alex Kalfakakos</Copyright>
+    <PackageReleaseNotes>Transfer to RossLean, more components</PackageReleaseNotes>
+    <Copyright>© 2021-2024 Alex Kalfakakos, © 2024 RossLean</Copyright>
     <PackageTags>roslyn, analyzer, nameof, expression, control</PackageTags>
     <DevelopmentDependency>true</DevelopmentDependency>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup Label="README reference">
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NameOn.CodeFixes\NameOn.CodeFixes.csproj" />

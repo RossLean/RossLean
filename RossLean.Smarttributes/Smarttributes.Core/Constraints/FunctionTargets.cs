@@ -31,7 +31,7 @@ public enum FunctionTargets
     /// Represents the anonymous methods (declared with the <see langword="delegate"/> operator).
     /// </summary>
     /// <remarks>
-    /// Anonymous methods are not supported for attribute targets, as of C# 11.
+    /// Anonymous methods are not supported for attribute targets, as of C# 12.
     /// </remarks>
     AnonymousMethod = 1 << 3,
 

@@ -15,7 +15,7 @@ public abstract class BaseSmarttributesDiagnosticTests<TAnalyzer> : BaseSmarttri
 public abstract class BaseSmarttributesDiagnosticTests : BaseDiagnosticTests
 {
     protected ExpectedDiagnostic ExpectedDiagnostic => ExpectedDiagnostic.Create(TestedDiagnosticRule);
-    protected sealed override DiagnosticDescriptorStorageBase DiagnosticDescriptorStorage => SmarttributesDiagnosicDescriptorStorage.Instance;
+    protected sealed override DiagnosticDescriptorStorageBase DiagnosticDescriptorStorage => SmarttributesDiagnosticDescriptorStorage.Instance;
 
     protected override UsingsProviderBase GetNewUsingsProviderInstance()
     {

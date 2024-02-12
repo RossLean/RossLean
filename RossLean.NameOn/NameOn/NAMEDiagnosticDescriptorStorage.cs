@@ -8,7 +8,7 @@ internal sealed class NAMEDiagnosticDescriptorStorage : DiagnosticDescriptorStor
 {
     public static readonly NAMEDiagnosticDescriptorStorage Instance = new();
 
-    protected override string BaseRuleDocsURI => "https://github.com/Rekkonnect/NameOn/blob/master/docs/rules";
+    protected override string BaseRuleDocsURI => "https://github.com/RossLean/RossLean/tree/master/RossLean.NameOn/docs/rules";
     protected override string DiagnosticIDPrefix => "NAME";
     protected override ResourceManager ResourceManager => Resources.ResourceManager;
 

@@ -8,7 +8,7 @@
     <PackageVersion>0.1.1</PackageVersion>
     <Version>0.1.1</Version>
     <Authors>Alex Kalfakakos</Authors>
-    <RepositoryUrl>https://github.com/Rekkonnect/NameOn</RepositoryUrl>
+    <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.NameOn</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>The core components for using NameOn.</Description>
     <PackageReleaseNotes></PackageReleaseNotes>

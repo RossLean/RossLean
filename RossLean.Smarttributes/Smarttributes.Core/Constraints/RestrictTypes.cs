@@ -36,7 +36,7 @@ public class RestrictTypesAttribute : Attribute
 public class RestrictTypesAttribute<T> : RestrictTypesAttribute
     where T : class
 {
-    private static readonly Type[] types = new[] { typeof(T) };
+    private static readonly Type[] types = [typeof(T)];
 
     public override Type[] Types => types;
 }
@@ -47,7 +47,7 @@ public class RestrictTypesAttribute<T1, T2> : RestrictTypesAttribute
     where T1 : class
     where T2 : class
 {
-    private static readonly Type[] types = new[] { typeof(T1), typeof(T2) };
+    private static readonly Type[] types = [typeof(T1), typeof(T2)];
 
     public override Type[] Types => types;
 }
@@ -59,7 +59,7 @@ public class RestrictTypesAttribute<T1, T2, T3> : RestrictTypesAttribute
     where T2 : class
     where T3 : class
 {
-    private static readonly Type[] types = new[] { typeof(T1), typeof(T2), typeof(T3) };
+    private static readonly Type[] types = [typeof(T1), typeof(T2), typeof(T3)];
 
     public override Type[] Types => types;
 }
@@ -72,15 +72,15 @@ public class RestrictTypesAttribute<T1, T2, T3, T4> : RestrictTypesAttribute
     where T3 : class
     where T4 : class
 {
-    private static readonly Type[] types = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+    private static readonly Type[] types = [typeof(T1), typeof(T2), typeof(T3), typeof(T4)];
 
     public override Type[] Types => types;
 }
 
 [RestrictToAttributes]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-public class RestrictToAttributesAttribute : RestrictTypesAttribute<Attribute> { }
+public class RestrictToAttributesAttribute : RestrictTypesAttribute<Attribute>;
 
 [RestrictToAttributes]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-public class RestrictToExceptionsAttribute : RestrictTypesAttribute<Exception> { }
+public class RestrictToExceptionsAttribute : RestrictTypesAttribute<Exception>;

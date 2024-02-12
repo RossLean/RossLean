@@ -32,7 +32,7 @@ public class RequiresPresenceAttribute : Attribute
 public sealed class RequiresPresenceAttribute<T> : RequiresPresenceAttribute
     where T : Attribute
 {
-    private static readonly Type[] types = new[] { typeof(T) };
+    private static readonly Type[] types = [typeof(T)];
 
     public override Type[] Types => types;
 }
@@ -43,7 +43,7 @@ public sealed class RequiresPresenceAttribute<T1, T2> : RequiresPresenceAttribut
     where T1 : Attribute
     where T2 : Attribute
 {
-    private static readonly Type[] types = new[] { typeof(T1), typeof(T2) };
+    private static readonly Type[] types = [typeof(T1), typeof(T2)];
 
     public override Type[] Types => types;
 }
@@ -55,7 +55,7 @@ public sealed class RequiresPresenceAttribute<T1, T2, T3> : RequiresPresenceAttr
     where T2 : Attribute
     where T3 : Attribute
 {
-    private static readonly Type[] types = new[] { typeof(T1), typeof(T2), typeof(T3) };
+    private static readonly Type[] types = [typeof(T1), typeof(T2), typeof(T3)];
 
     public override Type[] Types => types;
 }
@@ -68,7 +68,7 @@ public sealed class RequiresPresenceAttribute<T1, T2, T3, T4> : RequiresPresence
     where T3 : Attribute
     where T4 : Attribute
 {
-    private static readonly Type[] types = new[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
+    private static readonly Type[] types = [typeof(T1), typeof(T2), typeof(T3), typeof(T4)];
 
     public override Type[] Types => types;
 }

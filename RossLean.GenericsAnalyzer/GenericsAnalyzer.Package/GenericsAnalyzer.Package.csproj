@@ -9,18 +9,22 @@
 
   <PropertyGroup>
     <PackageId>GenericsAnalyzer</PackageId>
-    <Authors>Alex Kalfakakos</Authors>
-    <Version>1.3.3</Version>
-    <PackageVersion>1.3.3</PackageVersion>
-    <RepositoryUrl>https://github.com/Rekkonnect/GenericsAnalyzer</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Authors>Alex Kalfakakos,RossLean</Authors>
+    <Version>1.3.4-rc1</Version>
+    <PackageVersion>1.3.4-rc1</PackageVersion>
+    <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.GenericsAnalyzer</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Description>A Roslyn analyzer that empowers usage of generics through attributes.</Description>
-    <PackageReleaseNotes>The analyzer is now finally usable</PackageReleaseNotes>
-    <Copyright>© 2021, Alex Kalfakakos</Copyright>
-    <PackageTags>roslyn, analyzer, generics, constraints</PackageTags>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <PackageReleaseNotes>Transfer to RossLean, more components</PackageReleaseNotes>
+    <Copyright>© 2021-2024 Alex Kalfakakos, © 2024 RossLean</Copyright>
+    <PackageTags>roslyn, analyzer, generics, constraints, restrictions</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup Label="README reference">
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GenericsAnalyzer.CodeFixes\GenericsAnalyzer.CodeFixes.csproj" />

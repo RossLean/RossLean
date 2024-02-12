@@ -4,11 +4,11 @@ using System.Resources;
 
 namespace RossLean.Smarttributes;
 
-public sealed class SmarttributesDiagnosicDescriptorStorage : DiagnosticDescriptorStorageBase
+public sealed class SmarttributesDiagnosticDescriptorStorage : DiagnosticDescriptorStorageBase
 {
-    public static readonly SmarttributesDiagnosicDescriptorStorage Instance = new();
+    public static readonly SmarttributesDiagnosticDescriptorStorage Instance = new();
 
-    protected override string BaseRuleDocsURI => "https://github.com/Rekkonnect/Smarttributes/blob/main/docs/rules";
+    protected override string BaseRuleDocsURI => "https://github.com/RossLean/RossLean/tree/master/RossLean.Smarttributes/docs/rules";
     protected override string DiagnosticIDPrefix => "SMTTR";
     protected override ResourceManager ResourceManager => DiagnosticResources.ResourceManager;
 
@@ -21,7 +21,7 @@ public sealed class SmarttributesDiagnosicDescriptorStorage : DiagnosticDescript
     #endregion
 
     #region Rules
-    private SmarttributesDiagnosicDescriptorStorage()
+    private SmarttributesDiagnosticDescriptorStorage()
     {
         // Looks fancy, doesn't it?
 

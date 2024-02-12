@@ -1,3 +1,5 @@
+# Usage Documentation
+
 This analyzer currently provides the ability to restrict a generic type parameter's substituted types through the provided type constraint attributes. They must be directly specified at the generic type parameter.
 
 ---

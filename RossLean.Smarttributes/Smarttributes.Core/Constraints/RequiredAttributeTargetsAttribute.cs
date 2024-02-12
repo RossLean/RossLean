@@ -12,7 +12,7 @@ public class RequiredAttributeTargetsAttribute : Attribute
     /// </summary>
     public RestrictionKind RestrictionKind { get; }
     /// <summary>
-    /// The attribute targets that are part of the restriction, in conjuction with
+    /// The attribute targets that are part of the restriction, in conjunction with
     /// the <seealso cref="RestrictionKind"/>.
     /// </summary>
     public AttributeTargets Targets { get; }
@@ -22,7 +22,7 @@ public class RequiredAttributeTargetsAttribute : Attribute
     /// The restriction kind applied to the comparison of the restriction values.
     /// </param>
     /// <param name="targets">
-    /// The attribute targets that are part of the restriction, in conjuction with
+    /// The attribute targets that are part of the restriction, in conjunction with
     /// the <paramref name="restrictionKind"/>.
     /// </param>
     public RequiredAttributeTargetsAttribute(RestrictionKind restrictionKind, AttributeTargets targets)
