@@ -18,7 +18,7 @@ All code herein adheres to the MIT license. It is not expected to change in the 
 
 ## Current Projects
 
-- [GenericsAnalyzer](RossLean.GnericsAnalyzer/) - Expansions to the generic constraint model
+- [GenericsAnalyzer](RossLean.GenericsAnalyzer/) - Expansions to the generic constraint model
 - [NameOn](RossLean.NameOn/) - Enforcement and encouragement of `nameof` usage patterns
 - [Smarttributes](RossLean.Smarttributes/) - Constraints on application of attributes
 
