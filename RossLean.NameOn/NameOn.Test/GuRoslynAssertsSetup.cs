@@ -1,15 +1,13 @@
-﻿using Gu.Roslyn.Asserts;
+﻿using RossLean.Common.Test;
 using System.Runtime.CompilerServices;
 
 namespace RossLean.NameOn.Test;
 
-public static class GuRoslynAssertsSetup
+public class GuRoslynAssertsSetup : BaseGuRoslynAssertsSetup
 {
     [ModuleInitializer]
     public static void Setup()
     {
-        Settings.Default = Settings.Default
-            .WithAllowedCompilerDiagnostics(AllowedCompilerDiagnostics.WarningsAndErrors)
-            .WithMetadataReferences(MetadataReferences.Transitive(typeof(GuRoslynAssertsSetup)));
+        SetupDefaultSettings<GuRoslynAssertsSetup>();
     }
 }
