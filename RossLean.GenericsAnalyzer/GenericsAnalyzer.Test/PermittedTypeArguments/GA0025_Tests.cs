@@ -2,30 +2,29 @@
 
 namespace RossLean.GenericsAnalyzer.Test.PermittedTypeArguments;
 
-
 public sealed class GA0025_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
 {
     [Test]
     public void UnrelatedProfileInterfaces()
     {
         var testCode =
-$@"
-[TypeConstraintProfile]
-interface IA {{ }}
+            $$"""
+            [TypeConstraintProfile]
+            interface IA { }
 
-interface IB : ↓IA {{ }}
+            interface IB : ↓IA { }
 
-[TypeConstraintProfile]
-interface IC : ↓IB {{ }}
+            [TypeConstraintProfile]
+            interface IC : ↓IB { }
 
-[TypeConstraintProfile]
-interface ID : IC {{ }}
+            [TypeConstraintProfile]
+            interface ID : IC { }
 
-interface IE {{ }}
+            interface IE { }
 
-[TypeConstraintProfile]
-interface IF : IA, ↓IB, ↓IE {{ }}
-";
+            [TypeConstraintProfile]
+            interface IF : IA, ↓IB, ↓IE { }
+            """;
 
         AssertDiagnosticsWithUsings(testCode);
     }
@@ -34,16 +33,16 @@ interface IF : IA, ↓IB, ↓IE {{ }}
     public void ProfileInterfacesAndProfileGroupInterfaces()
     {
         var testCode =
-$@"
-[TypeConstraintProfile]
-interface IA {{ }}
+            $$"""
+            [TypeConstraintProfile]
+            interface IA { }
 
-[TypeConstraintProfileGroup]
-interface IB : ↓IA {{ }}
+            [TypeConstraintProfileGroup]
+            interface IB : ↓IA { }
 
-[TypeConstraintProfile]
-interface IC : ↓IB {{ }}
-";
+            [TypeConstraintProfile]
+            interface IC : ↓IB { }
+            """;
 
         AssertDiagnosticsWithUsings(testCode);
     }
@@ -52,22 +51,22 @@ interface IC : ↓IB {{ }}
     public void PartialInterfaceInheritingMixed()
     {
         var testCode =
-$@"
-[TypeConstraintProfile]
-interface IA {{ }}
+            $$"""
+            [TypeConstraintProfile]
+            interface IA { }
 
-interface IB {{ }}
+            interface IB { }
 
-[TypeConstraintProfile]
-interface IC {{ }}
+            [TypeConstraintProfile]
+            interface IC { }
 
-[TypeConstraintProfile]
-interface ID {{ }}
+            [TypeConstraintProfile]
+            interface ID { }
 
-[TypeConstraintProfile]
-partial interface IE : IA, IC, ↓IB {{ }}
-partial interface IE : ↓IB, ID, IA {{ }}
-";
+            [TypeConstraintProfile]
+            partial interface IE : IA, IC, ↓IB { }
+            partial interface IE : ↓IB, ID, IA { }
+            """;
 
         AssertDiagnosticsWithUsings(testCode);
     }

@@ -30,16 +30,16 @@ public sealed class GA0023_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
             attributeSymbol = $"[{attributeSymbol}]";
 
         var testCode =
-$@"
-{attributeSymbol}
-interface I {{ }}
-{attributeSymbol}
-interface ↓I<T> {{ }}
-{attributeSymbol}
-interface ↓I<T1, T2> {{ }}
-{attributeSymbol}
-interface ↓A<T1, T2, T3, T4> {{ }}
-";
+            $$"""
+            {{attributeSymbol}}
+            interface I { }
+            {{attributeSymbol}}
+            interface ↓I<T> { }
+            {{attributeSymbol}}
+            interface ↓I<T1, T2> { }
+            {{attributeSymbol}}
+            interface ↓A<T1, T2, T3, T4> { }
+            """;
 
         AssertOrValidateWithUsings(testCode, assertDiagnostics);
     }
@@ -48,16 +48,16 @@ interface ↓A<T1, T2, T3, T4> {{ }}
     public void PartialGenericProfileInterface()
     {
         var testCode =
-$@"
-partial interface I<T1, T2> {{ }}
+            """
+            partial interface I<T1, T2> { }
 
-[TypeConstraintProfile]
-partial interface ↓I<T1, T2> {{ }}
+            [TypeConstraintProfile]
+            partial interface ↓I<T1, T2> { }
 
-partial interface I<T1, T2> {{ }}
+            partial interface I<T1, T2> { }
 
-partial interface I<T1, T2> {{ }}
-";
+            partial interface I<T1, T2> { }
+            """;
 
         AssertDiagnosticsWithUsings(testCode);
     }

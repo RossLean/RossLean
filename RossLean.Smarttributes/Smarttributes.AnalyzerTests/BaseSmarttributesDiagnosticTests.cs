@@ -34,7 +34,7 @@ public abstract class BaseSmarttributesDiagnosticTests : BaseDiagnosticTests
     [Test]
     public void EmptyCode()
     {
-        ValidateCode(@"");
+        ValidateCode(string.Empty);
     }
     [Test]
     public void EmptyCodeWithUsings()

@@ -9,23 +9,23 @@ public class GA0024_CodeFixTests : InstanceTypeMemberRemoverCodeFixTests
     public void RedundantUsageWithCodeFix()
     {
         var testCode =
-@"
-[TypeConstraintProfileGroup]
-interface {|*:IGroup0|}
-{
-    int Property { get; set; }
-    void Function();
-    interface INested { }
-}
-";
+            """
+            [TypeConstraintProfileGroup]
+            interface {|*:IGroup0|}
+            {
+                int Property { get; set; }
+                void Function();
+                interface INested { }
+            }
+            """;
 
         var fixedCode =
-@"
-[TypeConstraintProfileGroup]
-interface IGroup0
-{
-}
-";
+            """
+            [TypeConstraintProfileGroup]
+            interface IGroup0
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }

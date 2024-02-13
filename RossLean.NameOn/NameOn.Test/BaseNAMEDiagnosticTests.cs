@@ -35,7 +35,7 @@ public abstract class BaseNAMEDiagnosticTests : BaseDiagnosticTests
     [Test]
     public void EmptyCode()
     {
-        ValidateCode(@"");
+        ValidateCode(string.Empty);
     }
     [Test]
     public void EmptyCodeWithUsings()

@@ -8,27 +8,27 @@ public class GA0010_CodeFixTests : RedundantAttributeArgumentRemoverCodeFixTests
     public void RedundantlyProhibitedTypeWithCodeFix()
     {
         var testCode =
-@"
-class C
-<
-    [ProhibitedTypes({|*:typeof(long)|})]
-    [ProhibitedBaseTypes(typeof(IComparable<>))]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [ProhibitedTypes({|*:typeof(long)|})]
+                [ProhibitedBaseTypes(typeof(IComparable<>))]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-class C
-<
-    [ProhibitedBaseTypes(typeof(IComparable<>))]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [ProhibitedBaseTypes(typeof(IComparable<>))]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
@@ -36,28 +36,28 @@ class C
     public void RedundantlyProhibitedTypeInAttributeListWithCodeFix()
     {
         var testCode =
-@"
-class C
-<
-    [Example, ProhibitedTypes({|*:typeof(long)|}), Example]
-    [ProhibitedBaseTypes(typeof(IComparable<>))]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [Example, ProhibitedTypes({|*:typeof(long)|}), Example]
+                [ProhibitedBaseTypes(typeof(IComparable<>))]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-class C
-<
-    [Example, Example]
-    [ProhibitedBaseTypes(typeof(IComparable<>))]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [Example, Example]
+                [ProhibitedBaseTypes(typeof(IComparable<>))]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
@@ -66,28 +66,28 @@ class C
     public void RedundantlyProhibitedAndValidTypeInAttributeListWithCodeFix()
     {
         var testCode =
-@"
-class C
-<
-    [Example, ProhibitedTypes({|*:typeof(long)|}, typeof(List<>)), Example]
-    [ProhibitedBaseTypes(typeof(IComparable<>))]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [Example, ProhibitedTypes({|*:typeof(long)|}, typeof(List<>)), Example]
+                [ProhibitedBaseTypes(typeof(IComparable<>))]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-class C
-<
-    [Example, ProhibitedTypes(typeof(List<>)), Example]
-    [ProhibitedBaseTypes(typeof(IComparable<>))]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [Example, ProhibitedTypes(typeof(List<>)), Example]
+                [ProhibitedBaseTypes(typeof(IComparable<>))]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }

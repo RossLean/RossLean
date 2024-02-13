@@ -3,7 +3,6 @@ using RossLean.GenericsAnalyzer.Core;
 
 namespace RossLean.GenericsAnalyzer.Test.PermittedTypeArguments;
 
-
 public sealed class GA0030_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
 {
     [Test]
@@ -28,24 +27,24 @@ public sealed class GA0030_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
             profileAttribute = $"[{profileAttribute}]";
 
         var testCode =
-$@"
-// Individually test every attribute
-[↓PermittedTypes(typeof(int))]
-{profileAttribute}
-interface IA {{ }}
-[↓ProhibitedTypes(typeof(long))]
-{profileAttribute}
-interface IB {{ }}
-[↓PermittedBaseTypes(typeof(IEnumerable))]
-{profileAttribute}
-interface IC {{ }}
-[↓ProhibitedBaseTypes(typeof(ICollection))]
-{profileAttribute}
-interface ID {{ }}
-[↓OnlyPermitSpecifiedTypes]
-{profileAttribute}
-interface IE {{ }}
-";
+            $$"""
+            // Individually test every attribute
+            [↓PermittedTypes(typeof(int))]
+            {{profileAttribute}}
+            interface IA { }
+            [↓ProhibitedTypes(typeof(long))]
+            {{profileAttribute}}
+            interface IB { }
+            [↓PermittedBaseTypes(typeof(IEnumerable))]
+            {{profileAttribute}}
+            interface IC { }
+            [↓ProhibitedBaseTypes(typeof(ICollection))]
+            {{profileAttribute}}
+            interface ID { }
+            [↓OnlyPermitSpecifiedTypes]
+            {{profileAttribute}}
+            interface IE { }
+            """;
 
         AssertOrValidateWithUsings(testCode, assertDiagnostics);
     }

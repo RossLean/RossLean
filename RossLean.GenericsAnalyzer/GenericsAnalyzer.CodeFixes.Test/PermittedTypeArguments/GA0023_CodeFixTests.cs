@@ -23,24 +23,24 @@ public class GA0023_CodeFixTests : UngenericizerCodeFixTests
         ExtendedSyntaxFactory.SimplifyAttributeNameUsage(ref attributeName);
 
         var testCode =
-$@"
-[{attributeName}]
-interface {{|*:IProfile1|}}<T1> {{ }}
-[{attributeName}]
-interface {{|*:IProfile2|}}<T1, T2> {{ }}
-[{attributeName}]
-interface {{|*:IProfile3|}}<T1, T2, T3> {{ }}
-";
+            $$"""
+            [{{attributeName}}]
+            interface {|*:IProfile1|}<T1> { }
+            [{{attributeName}}]
+            interface {|*:IProfile2|}<T1, T2> { }
+            [{{attributeName}}]
+            interface {|*:IProfile3|}<T1, T2, T3> { }
+            """;
 
         var fixedCode =
-$@"
-[{attributeName}]
-interface IProfile1 {{ }}
-[{attributeName}]
-interface IProfile2 {{ }}
-[{attributeName}]
-interface IProfile3 {{ }}
-";
+            $$"""
+            [{{attributeName}}]
+            interface IProfile1 { }
+            [{{attributeName}}]
+            interface IProfile2 { }
+            [{{attributeName}}]
+            interface IProfile3 { }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
@@ -49,20 +49,20 @@ interface IProfile3 {{ }}
     public void PartialGenericProfileInterfaceWithCodeFix()
     {
         var testCode =
-$@"
-[TypeConstraintProfile]
-partial interface {{|*:IProfile1|}}<T1> {{ }}
+            $$"""
+            [TypeConstraintProfile]
+            partial interface {|*:IProfile1|}<T1> { }
 
-partial interface IProfile1<T1> {{ }}
-";
+            partial interface IProfile1<T1> { }
+            """;
 
         var fixedCode =
-$@"
-[TypeConstraintProfile]
-partial interface IProfile1 {{ }}
+            $$"""
+            [TypeConstraintProfile]
+            partial interface IProfile1 { }
 
-partial interface IProfile1 {{ }}
-";
+            partial interface IProfile1 { }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }

@@ -9,31 +9,31 @@ public class GA0005_CodeFixTests : RedundantAttributeArgumentRemoverCodeFixTests
     public void ConstrainedTypeArgumentCodeFix()
     {
         var testCode =
-@"
-class C
-<
-    [PermittedTypes({|*:typeof(string)|})]
-    [PermittedTypes(typeof(IList<int>), typeof(ISet<int>))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-    where T : IEnumerable<int>
-{
-}
-";
+            """
+            class C
+            <
+                [PermittedTypes({|*:typeof(string)|})]
+                [PermittedTypes(typeof(IList<int>), typeof(ISet<int>))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+                where T : IEnumerable<int>
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-class C
-<
-    [PermittedTypes(typeof(IList<int>), typeof(ISet<int>))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-    where T : IEnumerable<int>
-{
-}
-";
+            """
+            class C
+            <
+                [PermittedTypes(typeof(IList<int>), typeof(ISet<int>))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+                where T : IEnumerable<int>
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
@@ -41,30 +41,30 @@ class C
     public void ConstrainedTypeArgumentMultipleTypeRulesCodeFix()
     {
         var testCode =
-@"
-class C
-<
-    [PermittedTypes({|*:typeof(string)|}, typeof(IList<int>), typeof(ISet<int>))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-    where T : IEnumerable<int>
-{
-}
-";
+            """
+            class C
+            <
+                [PermittedTypes({|*:typeof(string)|}, typeof(IList<int>), typeof(ISet<int>))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+                where T : IEnumerable<int>
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-class C
-<
-    [PermittedTypes(typeof(IList<int>), typeof(ISet<int>))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-    where T : IEnumerable<int>
-{
-}
-";
+            """
+            class C
+            <
+                [PermittedTypes(typeof(IList<int>), typeof(ISet<int>))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+                where T : IEnumerable<int>
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }

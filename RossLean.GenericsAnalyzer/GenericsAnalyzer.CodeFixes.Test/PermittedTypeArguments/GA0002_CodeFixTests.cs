@@ -9,35 +9,35 @@ public class GA0002_CodeFixTests : DuplicateAttributeArgumentRemoverCodeFixTests
     public void ConflictingConstraintsCodeFix_0()
     {
         var testCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes({|*:typeof(int)|}, typeof(long), typeof(ulong))]
-    [ProhibitedTypes({|*:typeof(int)|})]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes({|*:typeof(int)|}, typeof(long), typeof(ulong))]
+                [ProhibitedTypes({|*:typeof(int)|})]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes(typeof(int), typeof(long), typeof(ulong))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes(typeof(int), typeof(long), typeof(ulong))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode, 0);
     }
@@ -47,36 +47,36 @@ class C
     public void ConflictingConstraintsCodeFix_1()
     {
         var testCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes({|*:typeof(int)|}, typeof(long), typeof(ulong))]
-    [ProhibitedTypes({|*:typeof(int)|})]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes({|*:typeof(int)|}, typeof(long), typeof(ulong))]
+                [ProhibitedTypes({|*:typeof(int)|})]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes(typeof(long), typeof(ulong))]
-    [ProhibitedTypes(typeof(int))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes(typeof(long), typeof(ulong))]
+                [ProhibitedTypes(typeof(int))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode, 1);
     }
@@ -85,36 +85,36 @@ class C
     public void MultipleConflictingConstraintsCodeFix_0()
     {
         var testCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
-    [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
+                [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode, 0);
     }
@@ -124,37 +124,37 @@ class C
     public void MultipleConflictingConstraintsCodeFix_1()
     {
         var testCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
-    [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
+                [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes(typeof(long), typeof(ulong))]
-    [ProhibitedTypes(typeof(List<int>))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes(typeof(long), typeof(ulong))]
+                [ProhibitedTypes(typeof(List<int>))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode, 1);
     }
@@ -163,52 +163,52 @@ class C
     public void MultipleClassesConflictingConstraintsCodeFix()
     {
         var testCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
-    [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-class D
-<
-    [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
+                [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            class D
+            <
+                [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-class D
-<
-    [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            class D
+            <
+                [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode, 0);
     }
@@ -217,38 +217,38 @@ class D
     public void ExtraAttributesConflictingConstraintsCodeFix()
     {
         var testCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
-    [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
-    [Example(typeof(List<int>), 1)]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes({|*:typeof(List<int>)|}, typeof(long), typeof(ulong))]
+                [ProhibitedTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [ProhibitedBaseTypes({|*:typeof(List<int>)|}, {|*:typeof(List<int>)|})]
+                [Example(typeof(List<int>), 1)]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-#pragma warning disable GA0010
-#pragma warning disable GA0011
+            """
+            #pragma warning disable GA0010
+            #pragma warning disable GA0011
 
-class C
-<
-    [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
-    [Example(typeof(List<int>), 1)]
-    [OnlyPermitSpecifiedTypes]
-    T
->
-{
-}
-";
+            class C
+            <
+                [PermittedTypes(typeof(List<int>), typeof(long), typeof(ulong))]
+                [Example(typeof(List<int>), 1)]
+                [OnlyPermitSpecifiedTypes]
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode, 0);
     }

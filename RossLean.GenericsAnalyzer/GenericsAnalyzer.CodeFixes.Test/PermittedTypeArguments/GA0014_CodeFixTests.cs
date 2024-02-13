@@ -9,21 +9,21 @@ public class GA0014_CodeFixTests : RedundantAttributeRemoverCodeFixTests
     public void RedundantUsageWithCodeFix()
     {
         var testCode =
-@"
-delegate void Delegate
-<
-    [{|*:InheritBaseTypeUsageConstraints|}]
-    T
->(T something);
-";
+            """
+            delegate void Delegate
+            <
+                [{|*:InheritBaseTypeUsageConstraints|}]
+                T
+            >(T something);
+            """;
 
         var fixedCode =
-@"
-delegate void Delegate
-<
-    T
->(T something);
-";
+            """
+            delegate void Delegate
+            <
+                T
+            >(T something);
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
@@ -32,22 +32,22 @@ delegate void Delegate
     public void AttributeListRedundantUsageWithCodeFix()
     {
         var testCode =
-@"
-delegate void Delegate
-<
-    [Example, {|*:InheritBaseTypeUsageConstraints|}, Example]
-    T
->(T something);
-";
+            """
+            delegate void Delegate
+            <
+                [Example, {|*:InheritBaseTypeUsageConstraints|}, Example]
+                T
+            >(T something);
+            """;
 
         var fixedCode =
-@"
-delegate void Delegate
-<
-    [Example, Example]
-    T
->(T something);
-";
+            """
+            delegate void Delegate
+            <
+                [Example, Example]
+                T
+            >(T something);
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }

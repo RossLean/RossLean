@@ -8,25 +8,25 @@ public class GA0015_CodeFixTests : RedundantAttributeRemoverCodeFixTests
     public void RedundantUsageWithCodeFix()
     {
         var testCode =
-@"
-class C
-<
-    [{|*:InheritBaseTypeUsageConstraints|}]
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                [{|*:InheritBaseTypeUsageConstraints|}]
+                T
+            >
+            {
+            }
+            """;
 
         var fixedCode =
-@"
-class C
-<
-    T
->
-{
-}
-";
+            """
+            class C
+            <
+                T
+            >
+            {
+            }
+            """;
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
