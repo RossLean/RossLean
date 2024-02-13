@@ -30,6 +30,10 @@
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Smarttributes\Smarttributes.csproj" />
+  </ItemGroup>
+
   <ItemGroup Label="RoseLynn">
     <PackageReference Include="RoseLynn.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="RoseLynn.Analyzers.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />

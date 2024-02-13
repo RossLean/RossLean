@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RossLean.Common\RossLean.Common.Test.csproj" />
     <ProjectReference Include="..\Smarttributes.Core\Smarttributes.Core.csproj" />
     <ProjectReference Include="..\Smarttributes\Smarttributes.csproj" />
   </ItemGroup>

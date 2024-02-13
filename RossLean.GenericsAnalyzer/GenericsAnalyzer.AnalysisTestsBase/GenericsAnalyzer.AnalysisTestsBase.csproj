@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RossLean.Common\RossLean.Common.Test.csproj" />
     <ProjectReference Include="..\GenericsAnalyzer.CodeFixes\GenericsAnalyzer.CodeFixes.csproj" />
     <ProjectReference Include="..\GenericsAnalyzer\GenericsAnalyzer.csproj" />
   </ItemGroup>

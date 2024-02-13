@@ -43,7 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RossLean.NameOn", "RossLean
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RossLean.Smarttributes", "RossLean.Smarttributes", "{C2BF4B3E-2426-4605-B2E3-B81E499A015E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RossLean.Common", "RossLean.Common\RossLean.Common.csproj", "{DD941097-E080-40E3-B542-4A99F2F376BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RossLean.Common.Test", "RossLean.Common\RossLean.Common.Test.csproj", "{DD941097-E080-40E3-B542-4A99F2F376BF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5CA4AC1B-AB0D-40E3-A186-8261472076AB}"
 	ProjectSection(SolutionItems) = preProject
@@ -52,6 +52,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		SpellingExclusions.dic = SpellingExclusions.dic
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RossLean.Common.Base", "RossLean.Common.Base\RossLean.Common.Base.csproj", "{7B95BE77-F4FA-46C7-A8A4-A0C6B4F8A618}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,10 @@ Global
 		{DD941097-E080-40E3-B542-4A99F2F376BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD941097-E080-40E3-B542-4A99F2F376BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD941097-E080-40E3-B542-4A99F2F376BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B95BE77-F4FA-46C7-A8A4-A0C6B4F8A618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B95BE77-F4FA-46C7-A8A4-A0C6B4F8A618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B95BE77-F4FA-46C7-A8A4-A0C6B4F8A618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B95BE77-F4FA-46C7-A8A4-A0C6B4F8A618}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

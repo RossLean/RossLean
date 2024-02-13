@@ -3,7 +3,6 @@ using RossLean.GenericsAnalyzer.Core;
 
 namespace RossLean.GenericsAnalyzer.Test.PermittedTypeArguments;
 
-
 public sealed class GA0023_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
 {
     [Test]

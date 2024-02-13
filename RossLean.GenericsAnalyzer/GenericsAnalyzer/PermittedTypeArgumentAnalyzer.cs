@@ -517,8 +517,6 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                     if (diagnostic != null)
                         context.ReportDiagnostic(diagnostic);
 
-                    // "Using a non-static local function is fine."
-                    //                              -- Rekkon, 2021
                     Diagnostic CreateReportDiagnostic()
                     {
                         switch (type)

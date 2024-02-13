@@ -27,6 +27,7 @@ All code herein adheres to the MIT license. It is not expected to change in the 
 - Many features that are asked from the community in the [C# language design discussions](https://github.com/dotnet/csharplang/discussions). Currently interesting ones include:
   - Bitfield struct support - via a source generator ([Link](https://github.com/dotnet/csharplang/discussions/465))
   - Disallow direct value assignment to `ref` - `ref readonly` also provides immutability ([Link](https://github.com/dotnet/csharplang/discussions/7842))
+  - Opt out of structural typing for specific types ([Link](https://github.com/dotnet/csharplang/discussions/5278#discussion-3623748))
 - Common coding pattern simplification generators
   - Params method overload generator
   - Type parameter method overload generator
