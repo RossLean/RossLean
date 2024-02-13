@@ -1,8 +1,8 @@
 ﻿using Gu.Roslyn.Asserts;
 using Microsoft.CodeAnalysis.Diagnostics;
+using RoseLynn;
 using RoseLynn.Analyzers;
 using RoseLynn.Testing;
-using RoseLynn;
 
 namespace RossLean.Smarttributes.AnalyzerTests;
 

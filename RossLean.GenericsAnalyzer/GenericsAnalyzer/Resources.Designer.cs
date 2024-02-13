@@ -61,7 +61,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type &apos;{0}&apos; has specified explicit type constraints, preventing the type &apos;{1}&apos; from being used.
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; has specified explicit type constraints, preventing the type &apos;{1}&apos; from being used{2}.
         /// </summary>
         internal static string GA0001_Description {
             get {
@@ -70,7 +70,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type &apos;{1}&apos; cannot be used as a generic type argument for the type &apos;{0}&apos; in this position.
+        ///   Looks up a localized string similar to The type &apos;{1}&apos; cannot be used as a generic type argument for the type &apos;{0}&apos; in this position{2}.
         /// </summary>
         internal static string GA0001_MessageFormat {
             get {

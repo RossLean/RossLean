@@ -30,7 +30,30 @@ public abstract class BaseGADiagnosticTests : BaseDiagnosticTests
     }
     protected override void AssertDiagnostics(string testCode)
     {
-        RoslynAssert.Diagnostics(GetNewDiagnosticAnalyzerInstance(), ExpectedDiagnostic, testCode);
+        RoslynAssert.Diagnostics(
+            GetNewDiagnosticAnalyzerInstance(),
+            ExpectedDiagnostic,
+            testCode);
+    }
+    protected void AssertDiagnostics(
+        string testCode,
+        ExpectedDiagnostic customExpectedDiagnostic)
+    {
+        RoslynAssert.Diagnostics(
+            GetNewDiagnosticAnalyzerInstance(),
+            customExpectedDiagnostic,
+            testCode);
+    }
+    protected void AssertDiagnosticsWithMessage(
+        string testCode,
+        string additionalMessage)
+    {
+        var id = TestedDiagnosticRule.Id;
+        var expectedDiagnostic = ExpectedDiagnostic.Create(id, additionalMessage);
+        RoslynAssert.Diagnostics(
+            GetNewDiagnosticAnalyzerInstance(),
+            expectedDiagnostic,
+            testCode);
     }
 
     [Test]

@@ -514,7 +514,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                     var type = typeSystemDiagnostics.GetDiagnosticType(typeConstant);
 
                     var diagnostic = CreateReportDiagnostic();
-                    if (diagnostic != null)
+                    if (diagnostic is not null)
                         context.ReportDiagnostic(diagnostic);
 
                     Diagnostic CreateReportDiagnostic()
@@ -627,7 +627,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                     bool isRecursiveInheritance = false;
 
                     // Discover the inheritance stack
-                    while (inheritedType != null)
+                    while (inheritedType is not null)
                     {
                         if (isRecursiveInheritance = !inheritStack.Push(inheritorType))
                         {
@@ -681,7 +681,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
 
         for (int i = 0; i < typeArguments.Length; i++)
         {
-            if (typeArgumentNodes != null)
+            if (typeArgumentNodes is not null)
                 candidateErrorNode = typeArgumentNodes[i];
 
             var argumentType = typeArguments[i];
@@ -696,7 +696,13 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                     if (declaringElementTypeParameter.Name == declaredTypeParameter.Name)
                     {
                         if (!system.IsPermitted(declaredTypeParameter, genericNames))
-                            context.ReportDiagnostic(Diagnostics.CreateGA0017(candidateErrorNode, originalDefinition, argumentType));
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostics.CreateGA0017(
+                                    candidateErrorNode,
+                                    originalDefinition,
+                                    argumentType));
+                        }
 
                         break;
                     }
@@ -704,8 +710,16 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
             }
             else
             {
-                if (!system.IsPermitted(argumentType))
-                    context.ReportDiagnostic(Diagnostics.CreateGA0001(candidateErrorNode, originalDefinition, argumentType));
+                if (!system.IsPermitted(argumentType, out var rule))
+                {
+                    var reason = rule?.Reason;
+                    context.ReportDiagnostic(
+                        Diagnostics.CreateGA0001(
+                            candidateErrorNode,
+                            originalDefinition,
+                            argumentType,
+                            reason));
+                }
             }
         }
     }
@@ -804,6 +818,6 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
 
     private static TypeConstraintRule? ParseAttributeRule(AttributeData data)
     {
-        return ConstrainedTypesAttributeBase.GetConstraintRuleFromAttributeName(data.AttributeClass.Name);
+        return ConstrainedTypesAttributeBase.GetConstraintRuleFromAttribute(data);
     }
 }

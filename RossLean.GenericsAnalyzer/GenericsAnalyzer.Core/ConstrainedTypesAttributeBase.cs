@@ -1,4 +1,6 @@
 ﻿using Garyon.Reflection;
+using Microsoft.CodeAnalysis;
+using RossLean.GenericsAnalyzer.Core.Utilities;
 using System;
 using System.Linq;
 
@@ -32,20 +34,21 @@ public abstract class ConstrainedTypesAttributeBase : Attribute, IGenericTypeCon
         types = constrainedTypes;
     }
 
-    public static TypeConstraintRule? GetConstraintRule<T>()
-        where T : ConstrainedTypesAttributeBase
-    {
-        return instanceContainer.GetDefaultInstance<T>()?.Rule;
-    }
     /// <summary>Gets the constraint rule that the attribute with the given attribute name reflects.</summary>
     /// <param name="attributeTypeName">The name of the attribute whose constraint rule to get.</param>
     /// <returns>The <seealso cref="TypeConstraintRule"/> that is reflected from the attribute with the given name.</returns>
-    public static TypeConstraintRule? GetConstraintRuleFromAttributeName(string attributeTypeName)
+    public static TypeConstraintRule? GetConstraintRuleFromAttribute(AttributeData data)
     {
-        return instanceContainer.GetDefaultInstance(attributeTypeName)?.Rule;
-    }
-    public static TypeConstraintRule? GetConstraintRule(Type type)
-    {
-        return instanceContainer.GetDefaultInstance(type)?.Rule;
+        var name = data.AttributeClass.Name;
+        var rule = instanceContainer.GetDefaultInstance(name)?.Rule;
+        if (rule is null)
+            return rule;
+
+        var reasonArgument = data.GetNamedArgument(nameof(IReasonedConstraint.Reason));
+        var reasonString = reasonArgument?.Value as string;
+        return rule.Value with
+        {
+            Reason = reasonString
+        };
     }
 }

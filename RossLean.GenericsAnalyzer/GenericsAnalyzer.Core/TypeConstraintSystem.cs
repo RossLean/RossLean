@@ -114,8 +114,9 @@ public class TypeConstraintSystem
         {
             var type = rule.Key;
             var constraintRule = rule.Value.Rule;
+            var isPermission = constraintRule is ConstraintRule.Permit;
 
-            bool isRedundant = IsPermitted(type, false) == constraintRule is ConstraintRule.Permit;
+            bool isRedundant = IsPermitted(type, out _, false) == isPermission;
             if (isRedundant)
                 systemDiagnostics.RegisterRedundantlyConstrainedType(type, constraintRule);
         }
@@ -217,34 +218,60 @@ public class TypeConstraintSystem
         return SupersetOf(system);
     }
 
-    public bool IsPermitted(ITypeSymbol type) => IsPermitted(type, true);
-    private bool IsPermitted(ITypeSymbol type, bool checkInitialType)
+    public bool IsPermitted(ITypeSymbol type) => IsPermitted(type, out _);
+    public bool IsPermitted(
+        ITypeSymbol type,
+        out TypeConstraintRule? rule)
     {
+        return IsPermitted(type, out rule, true);
+    }
+
+    private bool IsPermitted(
+        ITypeSymbol type,
+        out TypeConstraintRule? rule,
+        bool checkInitialType)
+    {
+        rule = null;
+
         if (type is null)
             return false;
 
-        var permission = IsPermittedWithUnbound(type, checkInitialType, TypeConstraintReferencePoint.ExactType, TypeConstraintReferencePoint.BaseType);
-        if (permission != PermissionResult.Unknown)
-            return permission == PermissionResult.Permitted;
+        var permission = IsPermittedWithUnbound(
+            type,
+            checkInitialType,
+            out rule,
+            TypeConstraintReferencePoint.ExactType,
+            TypeConstraintReferencePoint.BaseType);
+
+        if (permission is not PermissionResult.Unknown)
+            return permission is PermissionResult.Permitted;
 
         var interfaceQueue = new Queue<INamedTypeSymbol>(type.Interfaces);
         while (interfaceQueue.Any())
         {
-            var i = interfaceQueue.Dequeue();
+            var @interface = interfaceQueue.Dequeue();
 
-            permission = IsPermittedWithUnbound(i, true, TypeConstraintReferencePoint.BaseType);
-            if (permission != PermissionResult.Unknown)
+            permission = IsPermittedWithUnbound(
+                @interface,
+                true,
+                out rule,
+                TypeConstraintReferencePoint.BaseType);
+            if (permission is not PermissionResult.Unknown)
                 return permission is PermissionResult.Permitted;
 
-            foreach (var indirectInterface in i.Interfaces)
+            foreach (var indirectInterface in @interface.Interfaces)
                 interfaceQueue.Enqueue(indirectInterface);
         }
 
         type = type.BaseType;
         while (type != null)
         {
-            permission = IsPermittedWithUnbound(type, true, TypeConstraintReferencePoint.BaseType);
-            if (permission != PermissionResult.Unknown)
+            permission = IsPermittedWithUnbound(
+                type,
+                true,
+                out rule,
+                TypeConstraintReferencePoint.BaseType);
+            if (permission is not PermissionResult.Unknown)
                 return permission is PermissionResult.Permitted;
 
             type = type.BaseType;
@@ -253,13 +280,19 @@ public class TypeConstraintSystem
         return !OnlyPermitSpecifiedTypes;
     }
 
-    private PermissionResult IsPermittedWithUnbound(ITypeSymbol type, bool checkInitialType, params TypeConstraintReferencePoint[] referencePoints)
+    private PermissionResult IsPermittedWithUnbound(
+        ITypeSymbol type,
+        bool checkInitialType,
+        out TypeConstraintRule? rule,
+        params TypeConstraintReferencePoint[] referencePoints)
     {
+        rule = null;
+
         PermissionResult permission;
         if (checkInitialType)
         {
-            permission = IsPermitted(type, referencePoints);
-            if (permission != PermissionResult.Unknown)
+            permission = IsPermitted(type, out rule, referencePoints);
+            if (permission is not PermissionResult.Unknown)
                 return permission;
         }
 
@@ -268,8 +301,8 @@ public class TypeConstraintSystem
             if (namedType.IsBoundGenericTypeSafe())
             {
                 var unbound = namedType.ConstructUnboundGenericType();
-                permission = IsPermitted(unbound, referencePoints);
-                if (permission != PermissionResult.Unknown)
+                permission = IsPermitted(unbound, out rule, referencePoints);
+                if (permission is not PermissionResult.Unknown)
                     return permission;
             }
         }
@@ -277,14 +310,19 @@ public class TypeConstraintSystem
         return PermissionResult.Unknown;
     }
 
-    private PermissionResult IsPermitted(ITypeSymbol type, params TypeConstraintReferencePoint[] referencePoints)
+    private PermissionResult IsPermitted(
+        ITypeSymbol type,
+        out TypeConstraintRule? rule,
+        params TypeConstraintReferencePoint[] referencePoints)
     {
-        if (!typeConstraintRules.ContainsKey(type))
+        rule = null;
+        bool contained = typeConstraintRules.TryGetValue(type, out var foundRule);
+        if (!contained)
             return PermissionResult.Unknown;
 
-        var rule = typeConstraintRules[type];
-        if (referencePoints.Contains(rule.TypeReferencePoint))
-            return (PermissionResult)rule.Rule;
+        rule = foundRule;
+        if (referencePoints.Contains(foundRule.TypeReferencePoint))
+            return (PermissionResult)foundRule.Rule;
 
         return PermissionResult.Unknown;
     }

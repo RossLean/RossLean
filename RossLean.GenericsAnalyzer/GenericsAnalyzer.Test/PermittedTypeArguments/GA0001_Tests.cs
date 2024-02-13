@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Gu.Roslyn.Asserts;
+using NUnit.Framework;
 
 namespace RossLean.GenericsAnalyzer.Test.PermittedTypeArguments;
 
@@ -324,5 +325,70 @@ public sealed class GA0001_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
             """;
 
         AssertDiagnosticsWithUsings(testCode);
+    }
+
+    [Test]
+    public void ReasonedProhibition()
+    {
+        const string testCode =
+            """
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<↓IEnumerable<string>>();
+                }
+            }
+
+            partial class Generic
+            <
+                [ProhibitedBaseTypes(typeof(IEnumerable<>), Reason = "Bad type 1")]
+                [ProhibitedBaseTypes(typeof(IReadOnlyCollection<>), Reason = "Bad type 2")]
+                [ProhibitedBaseTypes(typeof(string), Reason = "Bad type 3")]
+                T
+            >
+            {
+            }
+            """;
+
+        var message =
+            """
+            The type 'System.Collections.Generic.IEnumerable<string>' cannot be used as a generic type argument for the type 'Generic<T>' in this position
+            Reason: Bad type 1
+            """;
+        var withUsings = UsingsProvider.WithUsings(testCode);
+        AssertDiagnosticsWithMessage(withUsings, message);
+    }
+
+    [Test]
+    public void UnreasonedProhibition()
+    {
+        const string testCode =
+            """
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<↓IEnumerable<string>>();
+                }
+            }
+
+            partial class Generic
+            <
+                [ProhibitedBaseTypes(typeof(IEnumerable<>))]
+                [ProhibitedBaseTypes(typeof(IReadOnlyCollection<>), Reason = "Bad type 2")]
+                [ProhibitedBaseTypes(typeof(string), Reason = "Bad type 3")]
+                T
+            >
+            {
+            }
+            """;
+
+        var message =
+            """
+            The type 'System.Collections.Generic.IEnumerable<string>' cannot be used as a generic type argument for the type 'Generic<T>' in this position
+            """;
+        var withUsings = UsingsProvider.WithUsings(testCode);
+        AssertDiagnosticsWithMessage(withUsings, message);
     }
 }

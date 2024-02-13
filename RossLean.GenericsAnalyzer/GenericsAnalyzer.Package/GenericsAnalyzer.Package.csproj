@@ -10,8 +10,8 @@
   <PropertyGroup>
     <PackageId>GenericsAnalyzer</PackageId>
     <Authors>Alex Kalfakakos,RossLean</Authors>
-    <Version>1.3.4-rc1</Version>
-    <PackageVersion>1.3.4-rc1</PackageVersion>
+    <Version>1.4.0-rc1</Version>
+    <PackageVersion>1.4.0-rc1</PackageVersion>
     <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.GenericsAnalyzer</RepositoryUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Description>A Roslyn analyzer that empowers usage of generics through attributes.</Description>
