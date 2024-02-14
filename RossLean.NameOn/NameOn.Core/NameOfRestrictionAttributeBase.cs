@@ -1,7 +1,8 @@
-﻿using Garyon.Reflection;
+﻿using RossLean.Common.Base;
 using Microsoft.CodeAnalysis;
 using RoseLynn;
 using System;
+using System.Collections.Generic;
 
 namespace RossLean.NameOn.Core;
 
@@ -11,8 +12,10 @@ public abstract class NameOfRestrictionAttributeBase : Attribute, INameOfRelated
 {
     private static readonly InstanceContainer instanceContainer = new();
 
-    private sealed class InstanceContainer : DefaultInstanceContainer<NameOfRestrictionAttributeBase>
+    private sealed class InstanceContainer : BaseInstanceContainer<NameOfRestrictionAttributeBase>
     {
+        public override IEnumerable<Type> TypeSource => TypeSources.AssemblyOfType<NameOfRestrictionAttributeBase>();
+
         protected override object[] GetDefaultInstanceArguments()
         {
             return [IdentifiableSymbolKind.All];

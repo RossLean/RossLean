@@ -17,10 +17,10 @@ namespace RossLean.GenericsAnalyzer;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RedundantBaseTypeRuleConverter))]
 public class RedundantBaseTypeRuleConverter : GACodeFixProvider
 {
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new[]
-    {
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors =>
+    [
         Instance[0008]
-    };
+    ];
 
     public override FixAllProvider GetFixAllProvider() => null;
 
@@ -67,7 +67,7 @@ public class RedundantBaseTypeRuleConverter : GACodeFixProvider
         var lists = typeParameterNode.AttributeLists.Insert(newAttributeIndex, newAttributeListNode);
         var newTypeParameterNode = typeParameterNode.WithAttributeLists(lists);
 
-        // The resulting document is correct, the asserions are wrong
+        // The resulting document is correct, the assertions are wrong
         return document = await document.ReplaceNodeAsync(typeParameterNode, newTypeParameterNode, cancellationToken);
     }
 }

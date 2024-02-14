@@ -15,10 +15,10 @@ namespace RossLean.GenericsAnalyzer;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(Ungenericizer))]
 public sealed class Ungenericizer : GACodeFixProvider
 {
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new DiagnosticDescriptor[]
-    {
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors =>
+    [
         Instance[0023]
-    };
+    ];
 
     protected override async Task<Document> PerformCodeFixActionAsync(CodeFixContext context, SyntaxNode syntaxNode, CancellationToken cancellationToken)
     {

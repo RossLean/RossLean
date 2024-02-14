@@ -28,4 +28,8 @@
     <PackageReference Include="RoseLynn" Version="0.6.4.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RossLean.Common.Base\RossLean.Common.Base.csproj" />
+  </ItemGroup>
+
 </Project>

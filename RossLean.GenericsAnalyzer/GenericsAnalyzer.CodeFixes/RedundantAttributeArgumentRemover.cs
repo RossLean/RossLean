@@ -14,14 +14,14 @@ namespace RossLean.GenericsAnalyzer;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RedundantAttributeArgumentRemover))]
 public class RedundantAttributeArgumentRemover : GACodeFixProvider
 {
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new[]
-    {
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors =>
+    [
         Instance[0003],
         Instance[0004],
         Instance[0005],
         Instance[0010],
         Instance[0011],
-    };
+    ];
 
     protected override async Task<Document> PerformCodeFixActionAsync(CodeFixContext context, SyntaxNode syntaxNode, CancellationToken cancellationToken)
     {

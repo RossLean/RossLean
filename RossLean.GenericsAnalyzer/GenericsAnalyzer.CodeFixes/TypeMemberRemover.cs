@@ -17,30 +17,24 @@ public sealed class AllTypeMemberRemover : TypeMemberRemover
 {
     protected override RemovableTypeMembers GetRemovableTypeMembers() => RemovableTypeMembers.All;
 
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new DiagnosticDescriptor[]
-    {
-        // none for the time being
-    };
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => [];
 }
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(StaticTypeMemberRemover))]
 public sealed class StaticTypeMemberRemover : TypeMemberRemover
 {
     protected override RemovableTypeMembers GetRemovableTypeMembers() => RemovableTypeMembers.Static;
 
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new DiagnosticDescriptor[]
-    {
-        // none for the time being
-    };
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => [];
 }
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(InstanceTypeMemberRemover))]
 public sealed class InstanceTypeMemberRemover : TypeMemberRemover
 {
     protected override RemovableTypeMembers GetRemovableTypeMembers() => RemovableTypeMembers.Instance;
 
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new[]
-    {
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors =>
+    [
         Instance[0024],
-    };
+    ];
 }
 
 [Shared]

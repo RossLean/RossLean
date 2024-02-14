@@ -1,5 +1,4 @@
-﻿using Gu.Roslyn.Asserts;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace RossLean.GenericsAnalyzer.Test.PermittedTypeArguments;
 

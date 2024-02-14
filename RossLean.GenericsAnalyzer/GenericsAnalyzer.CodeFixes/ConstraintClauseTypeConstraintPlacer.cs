@@ -20,10 +20,10 @@ namespace RossLean.GenericsAnalyzer;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ConstraintClauseTypeConstraintPlacer))]
 public class ConstraintClauseTypeConstraintPlacer : GACodeFixProvider
 {
-    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors => new[]
-    {
+    protected override IEnumerable<DiagnosticDescriptor> FixableDiagnosticDescriptors =>
+    [
         Instance[0006]
-    };
+    ];
 
     protected override async Task<Document> PerformCodeFixActionAsync(CodeFixContext context, SyntaxNode syntaxNode, CancellationToken cancellationToken)
     {

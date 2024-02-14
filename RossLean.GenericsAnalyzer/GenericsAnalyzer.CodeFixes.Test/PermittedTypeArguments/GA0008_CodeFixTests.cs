@@ -2,10 +2,16 @@
 
 namespace RossLean.GenericsAnalyzer.CodeFixes.Test.PermittedTypeArguments;
 
-[Ignore("Resulting document's indentation is somehow altered during assertion")]
 public class GA0008_CodeFixTests : RedundantBaseTypeRuleConverterCodeFixTests
 {
+    internal const string AttributeListMissingTrivia =
+        """
+        The leading trivia of the one remaining attribute list are missing
+        after performing the code fix and preparing its assertion.
+        """;
+
     [Test]
+    [Ignore(AttributeListMissingTrivia)]
     public void RedundantBaseTypeRuleWithCodeFix()
     {
         var testCode =
@@ -36,7 +42,9 @@ public class GA0008_CodeFixTests : RedundantBaseTypeRuleConverterCodeFixTests
 
         TestCodeFixWithUsings(testCode, fixedCode);
     }
+
     [Test]
+    [Ignore(AttributeListMissingTrivia)]
     public void RedundantBaseTypeRuleWithinMultipleTypeRulesWithCodeFix()
     {
         var testCode =

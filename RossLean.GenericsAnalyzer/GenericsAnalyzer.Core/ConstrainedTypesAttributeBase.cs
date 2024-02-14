@@ -1,7 +1,8 @@
-﻿using Garyon.Reflection;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
+using RossLean.Common.Base;
 using RossLean.GenericsAnalyzer.Core.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RossLean.GenericsAnalyzer.Core;
@@ -12,8 +13,10 @@ public abstract class ConstrainedTypesAttributeBase : Attribute, IGenericTypeCon
 {
     private static readonly InstanceContainer instanceContainer = new();
 
-    private sealed class InstanceContainer : DefaultInstanceContainer<ConstrainedTypesAttributeBase>
+    private sealed class InstanceContainer : BaseInstanceContainer<ConstrainedTypesAttributeBase>
     {
+        public override IEnumerable<Type> TypeSource => TypeSources.AssemblyOfType<ConstrainedTypesAttributeBase>();
+
         protected override object[] GetDefaultInstanceArguments()
         {
             return [Type.EmptyTypes];
