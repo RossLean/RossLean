@@ -291,4 +291,52 @@
   <data name="GA0030_Title" xml:space="preserve">
     <value>Type constraint attributes used on non-profile interface</value>
   </data>
+  <data name="GA0040_MessageFormat" xml:space="preserve">
+    <value>The type groups that are exclusively permitted will never allow other type groups to be permitted</value>
+  </data>
+  <data name="GA0040_Title" xml:space="preserve">
+    <value>Invalid type group permission clashing with exclusive type group permission</value>
+  </data>
+  <data name="GA0041_MessageFormat" xml:space="preserve">
+    <value>The combination of these filters is impossible and thus cannot be exclusively applicable simultaneously</value>
+  </data>
+  <data name="GA0041_Title" xml:space="preserve">
+    <value>Incompatible exclusive filters</value>
+  </data>
+  <data name="GA0042_MessageFormat" xml:space="preserve">
+    <value>The declaration of exclusive filters renders this attribute redundant</value>
+  </data>
+  <data name="GA0042_Title" xml:space="preserve">
+    <value>Redundant OnlyPermitSpecifiedTypeGroups attribute</value>
+  </data>
+  <data name="GA0043_MessageFormat" xml:space="preserve">
+    <value>The constraints on this type parameter prohibit the permission of this type group</value>
+  </data>
+  <data name="GA0043_Title" xml:space="preserve">
+    <value>Type parameter constraints prohibit this type group permission</value>
+  </data>
+  <data name="GA0044_MessageFormat" xml:space="preserve">
+    <value>Another type group filter is permitted exclusively that cannot be combined with this type group filter</value>
+  </data>
+  <data name="GA0044_Title" xml:space="preserve">
+    <value>Redundant type group prohibition</value>
+  </data>
+  <data name="GA0045_MessageFormat" xml:space="preserve">
+    <value>OnlyPermitSpecifiedTypes prohibits all types that are not explicitly permitted and will therefore ignore all type group filters</value>
+  </data>
+  <data name="GA0045_Title" xml:space="preserve">
+    <value>Ineffective type group filter attribute when OnlyPermitSpecifiedTypes is present</value>
+  </data>
+  <data name="GA0046_MessageFormat" xml:space="preserve">
+    <value>The filter specialization does not differentiate from the general case of the filter</value>
+  </data>
+  <data name="GA0046_Title" xml:space="preserve">
+    <value>Redundant filter specialization</value>
+  </data>
+  <data name="GA0047_MessageFormat" xml:space="preserve">
+    <value>Another attribute covers the same filter specialization case</value>
+  </data>
+  <data name="GA0047_Title" xml:space="preserve">
+    <value>Duplicate filter specialization</value>
+  </data>
 </root>

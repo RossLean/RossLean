@@ -390,4 +390,100 @@ public sealed class GA0001_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
         var withUsings = UsingsProvider.WithUsings(testCode);
         AssertDiagnosticsWithMessage(withUsings, message);
     }
+
+    #region Type group filters
+    private const string _typeGroupFilterTestTypes =
+        """
+        abstract class Abstract;
+        sealed class Sealed;
+        class NonAbstractNonSealed;
+        record class NonAbstractNonSealedRecordClass;
+        abstract record class AbstractRecordClass;
+        sealed record class SealedRecordClass;
+        struct Struct;
+        record struct RecordStruct;
+        enum ExampleEnum;
+        delegate void ExampleDelegate();
+        """;
+
+    [Test]
+    public void TypeGroupFilters_01()
+    {
+        const string testCode =
+            $$"""
+            {{_typeGroupFilterTestTypes}}
+
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<↓IEnumerable<string>>();
+                    new Generic<↓IEnumerable>();
+                    new Generic<string>();
+                    new Generic<↓Abstract>();
+                    new Generic<↓NonAbstractNonSealed>();
+                    new Generic<↓NonAbstractNonSealedRecordClass>();
+                    new Generic<↓AbstractRecordClass>();
+                    new Generic<SealedRecordClass>();
+                    new Generic<↓Struct>();
+                    new Generic<↓RecordStruct>();
+                    new Generic<↓ExampleEnum>();
+                    new Generic<ExampleDelegate>();
+                }
+            }
+
+            partial class Generic
+            <
+                [OnlyPermitSpecifiedTypeGroups]
+                [FilterDelegates(FilterType.Permitted)]
+                [FilterSealedClasses(FilterType.Permitted)]
+                [FilterAbstractClasses(FilterType.Prohibited)]
+                T
+            >
+            {
+            }
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
+
+    [Test]
+    public void TypeGroupFilters_02()
+    {
+        const string testCode =
+            $$"""
+            {{_typeGroupFilterTestTypes}}
+
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<↓IEnumerable<string>>();
+                    new Generic<↓IEnumerable>();
+                    new Generic<↓string>();
+                    new Generic<↓Abstract>();
+                    new Generic<↓NonAbstractNonSealed>();
+                    new Generic<↓NonAbstractNonSealedRecordClass>();
+                    new Generic<AbstractRecordClass>();
+                    new Generic<↓SealedRecordClass>();
+                    new Generic<↓Struct>();
+                    new Generic<↓RecordStruct>();
+                    new Generic<↓ExampleEnum>();
+                    new Generic<↓ExampleDelegate>();
+                }
+            }
+
+            partial class Generic
+            <
+                [FilterAbstractClasses(FilterType.Exclusive)]
+                [FilterRecordClasses(FilterType.Exclusive)]
+                T
+            >
+            {
+            }
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
+    #endregion
 }

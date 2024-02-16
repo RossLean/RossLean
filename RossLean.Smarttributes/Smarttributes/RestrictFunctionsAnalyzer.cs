@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using RoseLynn;
+using RossLean.Common.Base;
 using RossLean.Smarttributes.Constraints;
 using System.Collections.Immutable;
 

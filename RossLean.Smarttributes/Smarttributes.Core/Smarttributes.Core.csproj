@@ -10,4 +10,8 @@
     <RootNamespace>RossLean.Smarttributes</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RossLean.Common.Base\RossLean.Common.Base.csproj" />
+  </ItemGroup>
+
 </Project>

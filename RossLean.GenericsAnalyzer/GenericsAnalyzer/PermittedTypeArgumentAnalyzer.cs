@@ -7,6 +7,7 @@ using RoseLynn;
 using RoseLynn.Analyzers;
 using RoseLynn.CSharp.Syntax;
 using RoseLynn.Diagnostics;
+using RossLean.Common.Base;
 using RossLean.GenericsAnalyzer.Core;
 using RossLean.GenericsAnalyzer.Core.DataStructures;
 using RossLean.GenericsAnalyzer.Core.Utilities;
@@ -186,7 +187,9 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
 
         var templateAttributeDeclaringNodes = new HashSet<InterfaceDeclarationSyntax>(
             templateAttributeStorage.GetAllAssociatedAttributes().Select(
-                attribute => attribute.ApplicationSyntaxReference?.GetSyntax()?.GetNearestParentOfType<InterfaceDeclarationSyntax>()));
+                attribute => attribute.ApplicationSyntaxReference
+                    ?.GetSyntax()
+                    ?.GetNearestParentOfType<InterfaceDeclarationSyntax>()));
         // Must be non-generic regardless of the case
         if (profileSymbol.Arity > 0)
             context.ReportDiagnostics(templateAttributeDeclaringNodes, Diagnostics.CreateGA0023);
@@ -256,10 +259,14 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
         // Profile type declaration does not handle any attributes that are not already handled
         // for all handlers
         foreach (var attribute in profileDeclarationType.GetAttributes())
+        {
             ProcessAttribute(profileInfo.Builder, attribute, NoUnhandledAttributeProcessor);
+        }
 
         foreach (var inheritedInterface in profileDeclarationType.Interfaces)
+        {
             AnalyzeProfileRelatedDefinition(context, inheritedInterface);
+        }
 
         profileInfo.FinalizeSystem();
     }
@@ -772,7 +779,10 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
     private delegate bool AttributeProcessor(AttributeData attributeData);
     private delegate bool AttributeDataSyntaxProcessor(AttributeData attributeData, AttributeSyntax attributeNode);
 
-    private bool ProcessAttribute(TypeConstraintSystem.Builder systemBuilder, AttributeData attributeData, AttributeProcessor attributeProcessor)
+    private bool ProcessAttribute(
+        TypeConstraintSystem.Builder systemBuilder,
+        AttributeData attributeData,
+        AttributeProcessor attributeProcessor)
     {
         if (!IsNonProfileTypeConstraintAttribute(attributeData))
             return false;
@@ -781,17 +791,14 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
         if (attributeData.AttributeClass is IErrorTypeSymbol)
             return false;
 
-        // Using switch for when the other constraint attributes come into play
-        switch (attributeData.AttributeClass.Name)
-        {
-            case nameof(OnlyPermitSpecifiedTypesAttribute):
-                systemBuilder.OnlyPermitSpecifiedTypes = true;
-                return true;
+        bool handled = HandleKnownAttribute(attributeData, systemBuilder);
+        if (handled)
+            return true;
 
-            default:
-                if (attributeProcessor(attributeData))
-                    return true;
-                break;
+        // Default to the provided attribute processor
+        if (attributeProcessor(attributeData))
+        {
+            return true;
         }
 
         // It is assured that the analyzer cares about the attribute from the base interface check
@@ -800,11 +807,111 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
         // The arguments will be always stored as an array, regardless of their count
         // If an error is thrown here, common causes could be:
         // - having forgotten to import a namespace
+        //   - should be handled by the check of IErrorTypeSymbol
         // - accidentally asserting unit test markup code as valid instead of asserting diagnostics
         // - neglecting that type constraint attributes may also be applied to interfaces and not just type params
         systemBuilder.Add(rule, GetAttributeTypeArrayArgument(attributeData));
 
         return true;
+    }
+
+    private static bool HandleKnownAttribute(
+        AttributeData attribute,
+        TypeConstraintSystem.Builder systemBuilder)
+    {
+        var attributeClassName = attribute.AttributeClass.Name;
+
+        switch (attributeClassName)
+        {
+            case nameof(OnlyPermitSpecifiedTypesAttribute):
+                systemBuilder.OnlyPermitSpecifiedTypes = true;
+                return true;
+            case nameof(OnlyPermitSpecifiedTypeGroupsAttribute):
+                systemBuilder.OnlyPermitSpecifiedTypeGroups = true;
+                return true;
+        }
+
+        bool hasArgument = attribute.ConstructorArguments
+            .TryGetAtIndex(0, out var filterTypeConstant);
+
+        var filterType = filterTypeConstant.EnumValueOrDefault<FilterType, byte>();
+
+        if (filterType is not FilterType.None)
+        {
+            switch (attributeClassName)
+            {
+                // Type group filters
+
+                case nameof(FilterInterfacesAttribute):
+                    systemBuilder.Filters.Interfaces = filterType;
+                    return true;
+                case nameof(FilterDelegatesAttribute):
+                    systemBuilder.Filters.Delegates = filterType;
+                    return true;
+                case nameof(FilterEnumsAttribute):
+                    systemBuilder.Filters.Enums = filterType;
+                    return true;
+                case nameof(FilterAbstractClassesAttribute):
+                    systemBuilder.Filters.AbstractClasses = filterType;
+                    return true;
+                case nameof(FilterSealedClassesAttribute):
+                    systemBuilder.Filters.SealedClasses = filterType;
+                    return true;
+                case nameof(FilterRecordClassesAttribute):
+                    systemBuilder.Filters.RecordClasses = filterType;
+                    return true;
+                case nameof(FilterRecordStructsAttribute):
+                    systemBuilder.Filters.RecordStructs = filterType;
+                    return true;
+
+                case nameof(FilterGenericTypesAttribute):
+                {
+                    SetCaseFilter(
+                        attribute,
+                        systemBuilder.Filters.GenericTypes,
+                        filterType);
+                    return true;
+                }
+
+                case nameof(FilterArrayTypesAttribute):
+                {
+                    SetCaseFilter(
+                        attribute,
+                        systemBuilder.Filters.Arrays,
+                        filterType);
+                    return true;
+                }
+
+                // End type group filters
+
+                default:
+                    return false;
+            }
+        }
+
+        return false;
+    }
+
+    private static void SetCaseFilter(
+        AttributeData attribute,
+        TypeConstraintSystem.CaseCollectionFilters filters,
+        FilterType filterType)
+    {
+        uint? value = TryGetArityOrRankValueArgument<uint>(attribute);
+        filters.Set(value, filterType);
+    }
+
+    private static T? TryGetArityOrRankValueArgument<T>(AttributeData attribute)
+        where T : struct
+    {
+        bool hasArgument = attribute.ConstructorArguments
+            .TryGetAtIndex(1, out var argument);
+        if (hasArgument)
+        {
+            return (T)argument.Value!;
+        }
+
+        return null;
     }
 
     private static bool IsNonProfileTypeConstraintAttribute(AttributeData data)

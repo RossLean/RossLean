@@ -12,8 +12,6 @@ namespace RossLean.Common.Base;
 
 #nullable enable
 
-using ReadOnlyTypeCollection = ImmutableArray<Type>;
-
 /// <summary>
 /// Provides a mechanism to initialize default instances of a type, including deriving types.
 /// </summary>
@@ -29,7 +27,7 @@ public abstract class BaseInstanceContainer<TBase>
     /// Gets all the default instance types that were found in the given type
     /// source, as determined by <see cref="TypeSource"/>.
     /// </summary>
-    public ReadOnlyTypeCollection DefaultInstanceTypes { get; }
+    public ImmutableArray<Type> DefaultInstanceTypes { get; }
 
     /// <summary>
     /// Provides the type source 

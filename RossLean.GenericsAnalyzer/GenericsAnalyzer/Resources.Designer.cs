@@ -581,5 +581,149 @@ namespace RossLean.GenericsAnalyzer {
                 return ResourceManager.GetString("GA0030_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type groups that are exclusively permitted will never allow other type groups to be permitted.
+        /// </summary>
+        internal static string GA0040_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0040_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid type group permission clashing with exclusive type group permission.
+        /// </summary>
+        internal static string GA0040_Title {
+            get {
+                return ResourceManager.GetString("GA0040_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The combination of these filters is impossible and thus cannot be exclusively applicable simultaneously.
+        /// </summary>
+        internal static string GA0041_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0041_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incompatible exclusive filters.
+        /// </summary>
+        internal static string GA0041_Title {
+            get {
+                return ResourceManager.GetString("GA0041_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The declaration of exclusive filters renders this attribute redundant.
+        /// </summary>
+        internal static string GA0042_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0042_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant OnlyPermitSpecifiedTypeGroups attribute.
+        /// </summary>
+        internal static string GA0042_Title {
+            get {
+                return ResourceManager.GetString("GA0042_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The constraints on this type parameter prohibit the permission of this type group.
+        /// </summary>
+        internal static string GA0043_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0043_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type parameter constraints prohibit this type group permission.
+        /// </summary>
+        internal static string GA0043_Title {
+            get {
+                return ResourceManager.GetString("GA0043_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another type group filter is permitted exclusively that cannot be combined with this type group filter.
+        /// </summary>
+        internal static string GA0044_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0044_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant type group prohibition.
+        /// </summary>
+        internal static string GA0044_Title {
+            get {
+                return ResourceManager.GetString("GA0044_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OnlyPermitSpecifiedTypes prohibits all types that are not explicitly permitted and will therefore ignore all type group filters.
+        /// </summary>
+        internal static string GA0045_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0045_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ineffective type group filter attribute when OnlyPermitSpecifiedTypes is present.
+        /// </summary>
+        internal static string GA0045_Title {
+            get {
+                return ResourceManager.GetString("GA0045_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The filter specialization does not differentiate from the general case of the filter.
+        /// </summary>
+        internal static string GA0046_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0046_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant filter specialization.
+        /// </summary>
+        internal static string GA0046_Title {
+            get {
+                return ResourceManager.GetString("GA0046_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another attribute covers the same filter specialization case.
+        /// </summary>
+        internal static string GA0047_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0047_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate filter specialization.
+        /// </summary>
+        internal static string GA0047_Title {
+            get {
+                return ResourceManager.GetString("GA0047_Title", resourceCulture);
+            }
+        }
     }
 }

@@ -19,6 +19,10 @@ public class RedundantAttributeRemover : GACodeFixProvider
         Instance[0014],
         Instance[0015],
         Instance[0016],
+        Instance[0042],
+        Instance[0044],
+        Instance[0045],
+        Instance[0046],
     ];
 
     protected override async Task<Document> PerformCodeFixActionAsync(CodeFixContext context, SyntaxNode syntaxNode, CancellationToken cancellationToken)

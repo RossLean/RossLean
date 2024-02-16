@@ -8,7 +8,7 @@ using System.Linq;
 namespace RossLean.GenericsAnalyzer.Core;
 
 /// <summary>Denotes that a generic type argument permits the usage of the specified types.</summary>
-[AttributeUsage(AttributeTargets.GenericParameter | AttributeTargets.Interface, AllowMultiple = true)]
+[AttributeUsage(CommonAttributeTargets.TypeParametersAndProfiles, AllowMultiple = true)]
 public abstract class ConstrainedTypesAttributeBase : Attribute, IGenericTypeConstraintAttribute
 {
     private static readonly InstanceContainer instanceContainer = new();

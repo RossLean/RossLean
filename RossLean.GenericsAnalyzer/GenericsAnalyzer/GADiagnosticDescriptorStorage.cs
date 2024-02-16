@@ -53,6 +53,14 @@ internal sealed class GADiagnosticDescriptorStorage : DiagnosticDescriptorStorag
         CreateDiagnosticDescriptor(0028, APIRestrictionsCategory, DiagnosticSeverity.Error);
         CreateDiagnosticDescriptor(0029, ValidityCategory, DiagnosticSeverity.Error);
         CreateDiagnosticDescriptor(0030, DesignCategory, DiagnosticSeverity.Warning);
+        CreateDiagnosticDescriptor(0040, ValidityCategory, DiagnosticSeverity.Error);
+        CreateDiagnosticDescriptor(0041, ValidityCategory, DiagnosticSeverity.Error);
+        CreateDiagnosticDescriptor(0042, BrevityCategory, DiagnosticSeverity.Warning);
+        CreateDiagnosticDescriptor(0043, ValidityCategory, DiagnosticSeverity.Error);
+        CreateDiagnosticDescriptor(0044, BrevityCategory, DiagnosticSeverity.Warning);
+        CreateDiagnosticDescriptor(0045, BrevityCategory, DiagnosticSeverity.Warning);
+        CreateDiagnosticDescriptor(0046, BrevityCategory, DiagnosticSeverity.Warning);
+        CreateDiagnosticDescriptor(0047, ValidityCategory, DiagnosticSeverity.Error);
     }
     #endregion
 }

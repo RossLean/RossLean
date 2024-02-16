@@ -1,6 +1,8 @@
 ﻿using Garyon.Extensions;
+using Garyon.Reflection;
 using Microsoft.CodeAnalysis;
 using RoseLynn;
+using RoseLynn.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,9 @@ namespace RossLean.GenericsAnalyzer.Core;
 
 // Aliases like that are great
 using RuleEqualityComparer = Func<KeyValuePair<ITypeSymbol, TypeConstraintRule>, bool>;
+
+// Resolving ambiguity with Garyon.Reflection.TypeKind
+using TypeKind = Microsoft.CodeAnalysis.TypeKind;
 
 /// <summary>Represents a system that contains a set of rules about type constraints.</summary>
 public class TypeConstraintSystem
@@ -31,6 +36,8 @@ public class TypeConstraintSystem
     public ITypeParameterSymbol TypeParameter { get; }
 
     public bool OnlyPermitSpecifiedTypes { get; set; }
+    public bool OnlyPermitSpecifiedTypeGroups { get; set; }
+    public TypeGroupFilters Filters { get; } = new();
 
     public Dictionary<TypeConstraintRule, HashSet<ITypeSymbol>> TypeConstraintsByRule
     {
@@ -63,8 +70,31 @@ public class TypeConstraintSystem
     #endregion
 
     #region Diagnostics
-    public bool HasNoExplicitlyPermittedTypes => !typeConstraintRules.Any(GetRuleEqualityComparer(ConstraintRule.Permit));
-    public bool HasNoPermittedTypes => OnlyPermitSpecifiedTypes && HasNoExplicitlyPermittedTypes;
+    public bool HasNoExplicitlyPermittedTypes
+    {
+        get
+        {
+            return !typeConstraintRules
+                .Any(GetRuleEqualityComparer(ConstraintRule.Permit));
+        }
+    }
+
+    public bool HasNoPermittedTypes
+    {
+        get
+        {
+            if (OnlyPermitSpecifiedTypes)
+                return HasNoExplicitlyPermittedTypes;
+
+            // TODO: Further analysis
+            if (OnlyPermitSpecifiedTypeGroups)
+            {
+                return false;
+            }
+
+            return false;
+        }
+    }
 
     private TypeConstraintSystemDiagnostics AnalyzeFinalizedSystem()
     {
@@ -192,10 +222,15 @@ public class TypeConstraintSystem
             if (other.OnlyPermitSpecifiedTypes)
                 return false;
 
+        bool subsetFilters = Filters.IsSubsetOf(other.Filters);
+        if (!subsetFilters)
+            return false;
+
         foreach (var rule in other.typeConstraintRules)
         {
             switch (rule.Value.Rule)
             {
+                // TODO: Evaluate correctness
                 case ConstraintRule.Permit:
                     continue;
                 case ConstraintRule.Prohibit:
@@ -235,6 +270,19 @@ public class TypeConstraintSystem
 
         if (type is null)
             return false;
+
+        var typeFilterPermission = CheckTypeGroupFilters(type);
+        // Do not consider the type permitted immediately
+        if (typeFilterPermission is PermissionResult.Prohibited)
+            return false;
+
+        if (OnlyPermitSpecifiedTypeGroups)
+        {
+            // Without explicit permission of the given type group,
+            // immediately reject the type
+            if (typeFilterPermission is PermissionResult.Unknown)
+                return false;
+        }
 
         var permission = IsPermittedWithUnbound(
             type,
@@ -278,6 +326,121 @@ public class TypeConstraintSystem
         }
 
         return !OnlyPermitSpecifiedTypes;
+    }
+
+    private PermissionResult CheckTypeGroupFilters(ITypeSymbol type)
+    {
+        var typeKind = type.TypeKind;
+
+        var permission = GetFinalPermissionResult(
+            type,
+            [
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Enum,
+                    Filters.Enums
+                ),
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Delegate,
+                    Filters.Delegates
+                ),
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Interface,
+                    Filters.Interfaces
+                ),
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Class
+                        && type.IsRecord,
+                    Filters.RecordClasses
+                ),
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Struct
+                        && type.IsRecord,
+                    Filters.RecordStructs
+                ),
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Class
+                        && type.IsAbstract,
+                    Filters.AbstractClasses
+                ),
+                new(
+                    static (type, typeKind)
+                        => typeKind is TypeKind.Class
+                        && type.IsSealed,
+                    Filters.SealedClasses
+                ),
+            ]);
+
+        if (permission is not PermissionResult.Unknown)
+            return permission;
+
+        // We assume that the rules have been validated beforehand and the appropriate
+        // errors will have been reported to the user about mixing invalid specialized
+        // generic arity and array rank filters
+        int arity = type.GetArity();
+        var genericFilter = Filters.GenericTypes.FilterTypeForValue(arity);
+        permission = PermissionOfFilter(genericFilter, true);
+        if (permission is not PermissionResult.Unknown)
+            return permission;
+
+        if (type is IArrayTypeSymbol arrayType)
+        {
+            int rank = arrayType.Rank;
+            var arrayFilter = Filters.GenericTypes.FilterTypeForValue(arity);
+            permission = PermissionOfFilter(arrayFilter, true);
+            if (permission is not PermissionResult.Unknown)
+                return permission;
+        }
+
+        return PermissionResult.Unknown;
+    }
+
+    private PermissionResult GetFinalPermissionResult(
+        ITypeSymbol type,
+        params FilterTypeAndMatcher[] filterMatchers)
+    {
+        var typeKind = type.TypeKind;
+        bool explicitlyPermitted = false;
+        foreach (var (matcher, filterType) in filterMatchers)
+        {
+            var result = matcher(type, typeKind);
+            var permission = PermissionOfFilter(filterType, result);
+
+            if (permission is PermissionResult.Prohibited)
+                return permission;
+
+            if (permission is PermissionResult.Permitted)
+                explicitlyPermitted = true;
+        }
+
+        if (explicitlyPermitted)
+            return PermissionResult.Permitted;
+
+        return PermissionResult.Unknown;
+    }
+
+    private delegate bool FilterMatcher(ITypeSymbol type, TypeKind typeKind);
+
+    private readonly record struct FilterTypeAndMatcher(
+        FilterMatcher Matcher, FilterType Type);
+
+    private PermissionResult PermissionOfFilter(FilterType type, bool matches)
+    {
+        if (type is FilterType.Exclusive)
+            return matches ? PermissionResult.Permitted : PermissionResult.Prohibited;
+
+        if (type is FilterType.Prohibited)
+            return matches ? PermissionResult.Prohibited : PermissionResult.Unknown;
+
+        if (type is FilterType.Permitted)
+            return matches ? PermissionResult.Permitted : PermissionResult.Unknown;
+
+        return PermissionResult.Unknown;
     }
 
     private PermissionResult IsPermittedWithUnbound(
@@ -426,11 +589,22 @@ public class TypeConstraintSystem
 
             set => finalSystem.OnlyPermitSpecifiedTypes = value;
         }
+        public bool OnlyPermitSpecifiedTypeGroups
+        {
+            get => finalSystem.OnlyPermitSpecifiedTypeGroups
+                || inheritedTypeParameterSystems.OnlyPermitSpecifiedTypeGroups
+                || inheritedProfileSystems.OnlyPermitSpecifiedTypeGroups;
+
+            set => finalSystem.OnlyPermitSpecifiedTypeGroups = value;
+        }
         public bool HasNoPermittedTypes
-            => OnlyPermitSpecifiedTypes
-            && finalSystem.HasNoExplicitlyPermittedTypes
-            && inheritedTypeParameterSystems.HasNoExplicitlyPermittedTypes
-            && inheritedProfileSystems.HasNoExplicitlyPermittedTypes;
+            => finalSystem.HasNoPermittedTypes
+            && inheritedTypeParameterSystems.HasNoPermittedTypes
+            && inheritedProfileSystems.HasNoPermittedTypes;
+
+        // IMPORTANT: For the time the filters are not inherited,
+        // and will not be accounted for when merging the declarations
+        public TypeGroupFilters Filters => finalSystem.Filters;
 
         public Builder(ITypeParameterSymbol typeParameter)
         {
@@ -614,6 +788,222 @@ public class TypeConstraintSystem
                 | FinalizedInheritedProfiles,
         }
     }
+
+    public sealed class TypeGroupFilters
+    {
+        public FilterType Interfaces { get; set; }
+        public FilterType Delegates { get; set; }
+        public FilterType Enums { get; set; }
+        public FilterType AbstractClasses { get; set; }
+        public FilterType SealedClasses { get; set; }
+        public FilterType RecordClasses { get; set; }
+        public FilterType RecordStructs { get; set; }
+        public CaseCollectionFilters GenericTypes { get; set; } = new();
+        public CaseCollectionFilters Arrays { get; set; } = new();
+
+        public bool HasAnyExplicitlyPermittedGroup
+        {
+            get
+            {
+                return Interfaces is FilterType.Permitted
+                    || Delegates is FilterType.Permitted
+                    || Enums is FilterType.Permitted
+                    || AbstractClasses is FilterType.Permitted
+                    || SealedClasses is FilterType.Permitted
+                    || RecordClasses is FilterType.Permitted
+                    || RecordStructs is FilterType.Permitted
+                    || GenericTypes.HasAnyExplicitlyPermittedCase
+                    || Arrays.HasAnyExplicitlyPermittedCase
+                    ;
+            }
+        }
+
+        public FilterableTypeGroups AllExclusiveFilteredTypeGroups()
+        {
+            var groups = FilterableTypeGroups.None;
+
+            if (Interfaces is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.Interface;
+            if (Delegates is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.Delegate;
+            if (Enums is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.Enum;
+            if (AbstractClasses is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.AbstractClass;
+            if (SealedClasses is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.SealedClass;
+            if (RecordClasses is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.RecordClass;
+            if (RecordStructs is FilterType.Exclusive)
+                groups |= FilterableTypeGroups.RecordStruct;
+            if (GenericTypes.HasAnyExclusiveCase)
+                groups |= FilterableTypeGroups.Generic;
+            if (Arrays.HasAnyExclusiveCase)
+                groups |= FilterableTypeGroups.Array;
+
+            return groups;
+        }
+
+        public FilterableTypeGroups AllPermittedFilteredTypeGroups()
+        {
+            var groups = FilterableTypeGroups.None;
+
+            if (Interfaces is FilterType.Permitted)
+                groups |= FilterableTypeGroups.Interface;
+            if (Delegates is FilterType.Permitted)
+                groups |= FilterableTypeGroups.Delegate;
+            if (Enums is FilterType.Permitted)
+                groups |= FilterableTypeGroups.Enum;
+            if (AbstractClasses is FilterType.Permitted)
+                groups |= FilterableTypeGroups.AbstractClass;
+            if (SealedClasses is FilterType.Permitted)
+                groups |= FilterableTypeGroups.SealedClass;
+            if (RecordClasses is FilterType.Permitted)
+                groups |= FilterableTypeGroups.RecordClass;
+            if (RecordStructs is FilterType.Permitted)
+                groups |= FilterableTypeGroups.RecordStruct;
+            if (GenericTypes.HasAnyExplicitlyPermittedCase)
+                groups |= FilterableTypeGroups.Generic;
+            if (Arrays.HasAnyExplicitlyPermittedCase)
+                groups |= FilterableTypeGroups.Array;
+
+            return groups;
+        }
+
+        public bool IsSubsetOf(TypeGroupFilters other)
+        {
+            return other.IsSupersetOf(this);
+        }
+        public bool IsSupersetOf(TypeGroupFilters other)
+        {
+            return FilterIsSupersetOf(Interfaces, other.Interfaces)
+                && FilterIsSupersetOf(Delegates, other.Delegates)
+                && FilterIsSupersetOf(Enums, other.Enums)
+                && FilterIsSupersetOf(AbstractClasses, other.AbstractClasses)
+                && FilterIsSupersetOf(SealedClasses, other.SealedClasses)
+                && FilterIsSupersetOf(RecordClasses, other.RecordClasses)
+                && FilterIsSupersetOf(RecordStructs, other.RecordStructs)
+                && GenericTypes.IsSupersetOf(other.GenericTypes)
+                && Arrays.IsSupersetOf(other.Arrays)
+                ;
+        }
+    }
+
+    // TODO: Perhaps make this an extension
+    public static bool FilterIsSupersetOf(FilterType left, FilterType right)
+    {
+        switch (left)
+        {
+            case FilterType.None:
+                return true;
+
+            case FilterType.Prohibited:
+                return right
+                    is FilterType.Prohibited;
+
+            case FilterType.Exclusive:
+                return right
+                    is FilterType.Exclusive;
+
+            case FilterType.Permitted:
+                return right
+                    is FilterType.Permitted
+                    or FilterType.Exclusive;
+
+            // Invalid values are simply ignored
+            default:
+                return false;
+        }
+    }
+
+    public class CaseCollectionFilters
+    {
+        public SpecificCaseFilter Default { get; set; }
+            = new(null, FilterType.None);
+
+        // We should not need anything too specialized for this one
+        public SortedList<uint, SpecificCaseFilter> Remaining { get; set; } = [];
+
+        public bool HasAnyExplicitlyPermittedCase
+        {
+            get
+            {
+                return Default.FilterType is FilterType.Permitted
+                    || Remaining.Values.Any(s => s.FilterType is FilterType.Permitted);
+            }
+        }
+
+        public bool HasAnyExclusiveCase
+        {
+            get
+            {
+                return Default.FilterType is FilterType.Exclusive
+                    || Remaining.Values.Any(s => s.FilterType is FilterType.Exclusive);
+            }
+        }
+
+        public void Set(uint? value, FilterType filterType)
+        {
+            Set(new(value, filterType));
+        }
+        public void Set(SpecificCaseFilter filter)
+        {
+            var value = filter.Value;
+            if (value is null)
+            {
+                Default = filter;
+                return;
+            }
+
+            Remaining[value!.Value] = filter;
+        }
+
+        public FilterType FilterTypeForValue(int value)
+        {
+            return FilterTypeForValue((uint)value);
+        }
+        public FilterType FilterTypeForValue(uint value)
+        {
+            bool found = Remaining.TryGetValue(value, out var filter);
+            if (found)
+                return filter.FilterType;
+
+            return Default.FilterType;
+        }
+
+        public bool IsSubsetOf(CaseCollectionFilters other)
+        {
+            return other.IsSupersetOf(this);
+        }
+        public bool IsSupersetOf(CaseCollectionFilters other)
+        {
+            var defaultLeft = Default.FilterType;
+            var defaultRight = other.Default.FilterType;
+            var isSuperset = FilterIsSupersetOf(defaultLeft, defaultRight);
+            if (!isSuperset)
+                return false;
+
+            var allNumbers = Remaining.Keys.ToSetOrExisting();
+            allNumbers.AddRange(other.Remaining.Keys);
+
+            foreach (var number in allNumbers)
+            {
+                Remaining.TryGetValue(number, out var leftFilter);
+                var left = leftFilter.FilterType;
+
+                other.Remaining.TryGetValue(number, out var rightFilter);
+                var right = rightFilter.FilterType;
+
+                isSuperset = FilterIsSupersetOf(defaultLeft, defaultRight);
+                if (!isSuperset)
+                    return false;
+            }
+
+            return true;
+        }
+    }
+
+    public record struct SpecificCaseFilter(uint? Value, FilterType FilterType);
 
     public class EqualityComparer : IEqualityComparer<TypeConstraintSystem>
     {
