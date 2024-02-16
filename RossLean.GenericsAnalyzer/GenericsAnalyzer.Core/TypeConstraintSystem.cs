@@ -598,9 +598,28 @@ public class TypeConstraintSystem
             set => finalSystem.OnlyPermitSpecifiedTypeGroups = value;
         }
         public bool HasNoPermittedTypes
-            => finalSystem.HasNoPermittedTypes
-            && inheritedTypeParameterSystems.HasNoPermittedTypes
-            && inheritedProfileSystems.HasNoPermittedTypes;
+        {
+            get
+            {
+                if (OnlyPermitSpecifiedTypes)
+                {
+                    return finalSystem.HasNoExplicitlyPermittedTypes
+                        && inheritedTypeParameterSystems.HasNoExplicitlyPermittedTypes
+                        && inheritedProfileSystems.HasNoExplicitlyPermittedTypes;
+                }
+
+                if (OnlyPermitSpecifiedTypeGroups)
+                {
+                    var groups = finalSystem.Filters
+                        .AllPermittedOrExclusiveFilteredTypeGroups();
+
+                    if (groups is FilterableTypeGroups.None)
+                        return false;
+                }
+
+                return false;
+            }
+        }
 
         // IMPORTANT: For the time the filters are not inherited,
         // and will not be accounted for when merging the declarations
@@ -868,6 +887,12 @@ public class TypeConstraintSystem
                 groups |= FilterableTypeGroups.Array;
 
             return groups;
+        }
+
+        public FilterableTypeGroups AllPermittedOrExclusiveFilteredTypeGroups()
+        {
+            return AllPermittedFilteredTypeGroups()
+                | AllExclusiveFilteredTypeGroups();
         }
 
         public bool IsSubsetOf(TypeGroupFilters other)
