@@ -40,7 +40,9 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
     private void RegisterNodeActions(AnalysisContext context)
     {
         // Only executed on *usage* of a generic element
-        context.RegisterSyntaxNodeAction(AnalyzeGenericNameOrFunctionCall, SyntaxKind.GenericName, SyntaxKind.IdentifierName);
+        context.RegisterSyntaxNodeAction(AnalyzeGenericNameOrFunctionCall,
+            SyntaxKind.GenericName,
+            SyntaxKind.IdentifierName);
 
         // Only executed on declaration of the following elements
         var genericSupportedMemberDeclarations = new SyntaxKind[]
@@ -49,8 +51,9 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
             SyntaxKind.ClassDeclaration,
             SyntaxKind.StructDeclaration,
             SyntaxKind.InterfaceDeclaration,
-            SyntaxKind.RecordDeclaration,
             SyntaxKind.DelegateDeclaration,
+            SyntaxKind.RecordDeclaration,
+            SyntaxKind.RecordStructDeclaration,
         };
         context.RegisterSyntaxNodeAction(AnalyzeGenericDeclaration, genericSupportedMemberDeclarations);
 
@@ -78,6 +81,15 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
             case GenericNameSyntax genericNameNode:
                 if (genericNameNode.IsUnboundGenericName)
                     return;
+
+                if (symbol is IMethodSymbol
+                    { MethodKind: MethodKind.Constructor } constructorSymbol)
+                {
+                    // We are encountering a generic attribute, and the semantic model
+                    // has bound this to the attribute constructor that is being used
+                    var containingType = constructorSymbol.ContainingType;
+                    symbol = containingType;
+                }
 
                 break;
 

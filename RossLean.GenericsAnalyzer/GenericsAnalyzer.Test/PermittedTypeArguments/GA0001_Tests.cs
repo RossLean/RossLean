@@ -391,6 +391,32 @@ public sealed class GA0001_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
         AssertDiagnosticsWithMessage(withUsings, message);
     }
 
+    [Test]
+    public void GenericAttributeProhibition()
+    {
+        const string testCode =
+            """
+            class Program
+            {
+                [Generic<↓IEnumerable<string>>]
+                static void Main()
+                {
+                }
+            }
+
+            sealed class GenericAttribute
+            <
+                [ProhibitedBaseTypes(typeof(IEnumerable<>))]
+                T
+            >
+                : Attribute
+            {
+            }
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
+
     #region Type group filters
     private const string _typeGroupFilterTestTypes =
         """

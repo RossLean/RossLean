@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Garyon" Version="0.3.3" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+    <PackageReference Include="RoseLynn" Version="0.6.4.1" />
     <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
   </ItemGroup>
 
