@@ -673,7 +673,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OnlyPermitSpecifiedTypes prohibits all types that are not explicitly permitted and will therefore ignore all type group filters.
+        ///   Looks up a localized string similar to There are no permitted base types along with OnlyPermitSpecifiedTypes which prohibits all types except for the exact ones.
         /// </summary>
         internal static string GA0045_MessageFormat {
             get {
@@ -682,7 +682,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ineffective type group filter attribute when OnlyPermitSpecifiedTypes is present.
+        ///   Looks up a localized string similar to Ineffective type group filter attribute with no permitted base types.
         /// </summary>
         internal static string GA0045_Title {
             get {
@@ -723,6 +723,60 @@ namespace RossLean.GenericsAnalyzer {
         internal static string GA0047_Title {
             get {
                 return ResourceManager.GetString("GA0047_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The presence of the attribute prohibits all type groups that are not explicitly permitted.
+        /// </summary>
+        internal static string GA0048_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0048_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No permitted type groups while using OnlyPermitSpecifiedTypeGroups.
+        /// </summary>
+        internal static string GA0048_Title {
+            get {
+                return ResourceManager.GetString("GA0048_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple conflicting specializations are marked as exclusive, which are incompatible.
+        /// </summary>
+        internal static string GA0049_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0049_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple conflicting specializations are marked as exclusive.
+        /// </summary>
+        internal static string GA0049_Title {
+            get {
+                return ResourceManager.GetString("GA0049_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An existing specialization is marked as exclusive, which prohibits all other specializations.
+        /// </summary>
+        internal static string GA0050_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0050_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redundant default case filter with exclusive specialization.
+        /// </summary>
+        internal static string GA0050_Title {
+            get {
+                return ResourceManager.GetString("GA0050_Title", resourceCulture);
             }
         }
     }

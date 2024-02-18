@@ -61,23 +61,3 @@ public sealed class FilterArrayTypesAttribute(FilterType filterType)
         Rank = rank;
     }
 }
-
-/*
-#error POC
-public static class POC
-{
-    public abstract class Generic
-    <
-        [OnlyPermitSpecifiedTypes]
-        [FilterInterfaces(FilterType.Permitted)]
-        [FilterSealedClasses(FilterType.Permitted)]
-        [FilterGenericTypes(FilterType.Permitted, 2)]
-        [FilterGenericTypes(FilterType.Exclusive, 1)]
-        [FilterArrayTypes(FilterType.Permitted, 1)]
-        [FilterArrayTypes(FilterType.Permitted, 0)]
-        T
-    >
-    {
-    }
-}
-*/

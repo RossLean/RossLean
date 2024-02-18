@@ -57,14 +57,20 @@ public static class FilterableTypeGroupFacts
 
         foreach (var validCombinationFlags in _validCombinationFlags)
         {
-            if (HasFlags(groups, validCombinationFlags))
+            if (HasAnyFlags(groups, validCombinationFlags))
                 return true;
         }
 
         return false;
     }
 
-    private static bool HasFlags(
+    private static bool HasAnyFlags(
+        FilterableTypeGroups groups, FilterableTypeGroups desiredFlags)
+    {
+        var masked = groups & desiredFlags;
+        return masked == groups;
+    }
+    private static bool HasAllFlags(
         FilterableTypeGroups groups, FilterableTypeGroups desiredFlags)
     {
         var masked = groups & desiredFlags;

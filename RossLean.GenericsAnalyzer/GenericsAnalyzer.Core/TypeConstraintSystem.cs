@@ -1,4 +1,5 @@
 ﻿using Garyon.Extensions;
+using Garyon.Functions;
 using Garyon.Reflection;
 using Microsoft.CodeAnalysis;
 using RoseLynn;
@@ -86,10 +87,24 @@ public class TypeConstraintSystem
             if (OnlyPermitSpecifiedTypes)
                 return HasNoExplicitlyPermittedTypes;
 
-            // TODO: Further analysis
+            if (HasNoPermittedTypesFromTypeGroupFilters)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public bool HasNoPermittedTypesFromTypeGroupFilters
+    {
+        get
+        {
             if (OnlyPermitSpecifiedTypeGroups)
             {
-                return false;
+                var typeGroups = Filters.AllPermittedOrExclusiveFilteredTypeGroups();
+                if (typeGroups is FilterableTypeGroups.None)
+                    return true;
             }
 
             return false;
@@ -102,7 +117,208 @@ public class TypeConstraintSystem
         AnalyzeRedundantlyConstrainedTypes();
         AnalyzeConstraintClauseReducibility();
         AnalyzeRedundantBoundUnboundRuleTypes();
+        AnalyzeTypeGroupFilters();
         return SystemDiagnostics;
+    }
+
+    private void AnalyzeTypeGroupFilters()
+    {
+        var filterInstances = Filters.GetFilterInstances();
+        var filterInstanceDictionary = filterInstances
+            .GroupBy(s => s.FilterType)
+            .ToDictionary(d => d.Key);
+
+        var exclusives = filterInstanceDictionary.ValueOrDefault(FilterType.Exclusive);
+        var permitted = filterInstanceDictionary.ValueOrDefault(FilterType.Permitted);
+        var prohibited = filterInstanceDictionary.ValueOrDefault(FilterType.Prohibited);
+        if (exclusives is not null)
+        {
+            // Incompatible exclusive filter analysis
+
+            var totalExclusiveFilters = FilterableTypeGroups.None;
+            foreach (var group in exclusives)
+            {
+                totalExclusiveFilters |= group.Identifier.TypeGroup;
+            }
+
+            bool isValidCombination = FilterableTypeGroupFacts.IsValidCombination(
+                totalExclusiveFilters);
+
+            if (!isValidCombination)
+            {
+                var exclusiveIdentifiers = exclusives.Select(static s => s.Identifier);
+                systemDiagnostics.RegisterIncompatibleExclusionFilters(exclusiveIdentifiers);
+            }
+
+            // Unavailable and redundant non-exclusive filter analysis
+
+            if (permitted is not null)
+            {
+                foreach (var group in permitted)
+                {
+                    systemDiagnostics.RegisterUnavailablePermissionByExclusion(group.Identifier);
+                }
+            }
+
+            if (prohibited is not null)
+            {
+                foreach (var group in prohibited)
+                {
+                    var prohibitedGroupFlag = group.Identifier.TypeGroup;
+                    var hypotheticalCombination = totalExclusiveFilters | prohibitedGroupFlag;
+                    // Only report the diagnostic when the prohibited group does not form
+                    // a viable filtering combination, in which case the set of allowed
+                    // types is unaffected
+                    if (!FilterableTypeGroupFacts.IsValidCombination(hypotheticalCombination))
+                    {
+                        systemDiagnostics.RegisterRedundantProhibitionByExclusion(group.Identifier);
+                    }
+                }
+            }
+
+            if (OnlyPermitSpecifiedTypeGroups)
+            {
+                systemDiagnostics.SetHasRedundantOnlyPermitAttributeByExclusion();
+            }
+        }
+
+        // Specializable type group filter instance analysis
+
+        var generics = SpecializableTypeGroupFilterInstanceCollection
+            .FromInstances(filterInstances
+                .Where(static s => s.Identifier is GenericTypeGroupFilter)
+            );
+        var arrays = SpecializableTypeGroupFilterInstanceCollection
+            .FromInstances(filterInstances
+                .Where(static s => s.Identifier is ArrayTypeGroupFilter)
+            );
+
+        AnalyzeSpecializableCollection(generics);
+        AnalyzeSpecializableCollection(arrays);
+
+        // Duplicate specialization registration analysis
+
+        ReportDuplicateSpecializationIdentifiers(
+            Filters.GenericTypes,
+            GenericTypeGroupFilter.DefaultOrSpecialized);
+        ReportDuplicateSpecializationIdentifiers(
+            Filters.Arrays,
+            ArrayTypeGroupFilter.DefaultOrSpecialized);
+    }
+
+    private void ReportDuplicateSpecializationIdentifiers<T>(
+        CaseCollectionFilters caseCollectionFilters,
+        Func<uint?, T> identifierSelector)
+        where T : ISpecializableTypeGroupFilterIdentifier
+    {
+        var identifiers = SelectDuplicateSpecializationIdentifiers(
+            caseCollectionFilters,
+            identifierSelector);
+
+        foreach (var identifier in identifiers)
+        {
+            systemDiagnostics.RegisterDuplicateSpecialization(identifier);
+        }
+    }
+
+    private IReadOnlyList<T> SelectDuplicateSpecializationIdentifiers<T>(
+        CaseCollectionFilters caseCollectionFilters,
+        Func<uint?, T> identifierSelector)
+        where T : ISpecializableTypeGroupFilterIdentifier
+    {
+        var values = caseCollectionFilters.GetDuplicateSpecializationValues();
+        if (values.Count is 0)
+            return [];
+
+        return values.Select(identifierSelector)
+            .ToArray();
+    }
+
+    private void AnalyzeSpecializableCollection(
+        SpecializableTypeGroupFilterInstanceCollection filters)
+    {
+        AnalyzePotentialRedundantSpecialization(filters);
+        AnalyzeRedundantExclusionOfDefaultSpecializable(filters);
+        AnalyzeIncompatibleExclusiveSpecializations(filters);
+        AnalyzeRedundantDefaultCaseByExclusiveSpecialization(filters);
+    }
+
+    private void AnalyzePotentialRedundantSpecialization(
+        SpecializableTypeGroupFilterInstanceCollection filters)
+    {
+        var defaultCase = filters.DefaultCase;
+
+        if (defaultCase is null)
+            return;
+
+        if (defaultCase.FilterType is FilterType.Exclusive)
+            return;
+
+        foreach (var specializedInstance in filters.SpecializedCases)
+        {
+            var identifier = specializedInstance.Identifier
+                as ISpecializableTypeGroupFilterIdentifier
+                ?? throw new InvalidOperationException("Expected specializable type group filter");
+
+            if (specializedInstance.FilterType == defaultCase.FilterType)
+            {
+                systemDiagnostics.RegisterRedundantSpecialization(identifier);
+            }
+        }
+    }
+
+    private void AnalyzeRedundantExclusionOfDefaultSpecializable(
+        SpecializableTypeGroupFilterInstanceCollection filters)
+    {
+        var defaultCase = filters.DefaultCase;
+
+        if (defaultCase is null)
+            return;
+
+        if (defaultCase.FilterType is not FilterType.Exclusive)
+            return;
+
+        foreach (var specializedInstance in filters.SpecializedCases)
+        {
+            if (specializedInstance.FilterType is FilterType.Exclusive)
+            {
+                systemDiagnostics.RegisterRedundantSpecialization(defaultCase.Identifier);
+            }
+        }
+    }
+
+    private void AnalyzeIncompatibleExclusiveSpecializations(
+        SpecializableTypeGroupFilterInstanceCollection filters)
+    {
+        var exclusives = filters.SpecializedCases
+            .Where(specializedInstance => specializedInstance.FilterType is FilterType.Exclusive)
+            .Select(specializedInstance => specializedInstance.Identifier)
+            .Cast<ISpecializableTypeGroupFilterIdentifier>()
+            .ToList();
+
+        if (exclusives.Count > 1)
+        {
+            systemDiagnostics.RegisterConflictingExclusiveSpecializationFilters(exclusives);
+        }
+    }
+
+    private void AnalyzeRedundantDefaultCaseByExclusiveSpecialization(
+        SpecializableTypeGroupFilterInstanceCollection filters)
+    {
+        var defaultCase = filters.DefaultCase;
+
+        if (defaultCase is null)
+            return;
+
+        foreach (var specializedCase in filters.SpecializedCases)
+        {
+            if (specializedCase.FilterType is FilterType.Exclusive)
+            {
+                systemDiagnostics.RegisterRedundantDefaultCaseByExclusiveSpecialization(
+                    defaultCase.Identifier);
+                return;
+            }
+        }
     }
 
     private void AnalyzeConstraintClauseReducibility()
@@ -560,9 +776,9 @@ public class TypeConstraintSystem
         {
             return new HashSet<INamedTypeSymbol>(
                 distinctGroupUsages.Values
-                    .Where(list => list.Count > 1)
+                    .Where(static list => list.Count > 1)
                     .Flatten()
-                    .Select(info => info.ProfileDeclaringInterface),
+                    .Select(static info => info.ProfileDeclaringInterface),
                 SymbolEqualityComparer.Default);
         }
     }
@@ -608,13 +824,9 @@ public class TypeConstraintSystem
                         && inheritedProfileSystems.HasNoExplicitlyPermittedTypes;
                 }
 
-                if (OnlyPermitSpecifiedTypeGroups)
+                if (finalSystem.HasNoPermittedTypesFromTypeGroupFilters)
                 {
-                    var groups = finalSystem.Filters
-                        .AllPermittedOrExclusiveFilteredTypeGroups();
-
-                    if (groups is FilterableTypeGroups.None)
-                        return false;
+                    return true;
                 }
 
                 return false;
@@ -912,6 +1124,52 @@ public class TypeConstraintSystem
                 && Arrays.IsSupersetOf(other.Arrays)
                 ;
         }
+
+        public IReadOnlyList<TypeGroupFilterInstance> GetFilterInstances()
+        {
+            var result = new List<TypeGroupFilterInstance>();
+
+            Add(BasicTypeGroupFilter.Interface, Interfaces);
+            Add(BasicTypeGroupFilter.Delegate, Delegates);
+            Add(BasicTypeGroupFilter.Enum, Enums);
+            Add(BasicTypeGroupFilter.AbstractClass, AbstractClasses);
+            Add(BasicTypeGroupFilter.SealedClass, SealedClasses);
+            Add(BasicTypeGroupFilter.RecordClass, RecordClasses);
+            Add(BasicTypeGroupFilter.RecordStruct, RecordStructs);
+
+            Add(GenericTypeGroupFilter.Default, GenericTypes.Default);
+            Add(ArrayTypeGroupFilter.Default, Arrays.Default);
+
+            foreach (var other in GenericTypes.Remaining)
+            {
+                var (value, filterType) = other.Value;
+                if (filterType is FilterType.None)
+                    continue;
+
+                var identifier = new GenericTypeGroupFilter(value);
+                Add(identifier, filterType);
+            }
+
+            foreach (var other in Arrays.Remaining)
+            {
+                var (value, filterType) = other.Value;
+                if (filterType is FilterType.None)
+                    continue;
+
+                var identifier = new ArrayTypeGroupFilter(value);
+                Add(identifier, filterType);
+            }
+
+            return result;
+
+            void Add(ITypeGroupFilterIdentifier identifier, FilterType filterType)
+            {
+                if (filterType is FilterType.None)
+                    return;
+
+                result.Add(new(identifier, filterType));
+            }
+        }
     }
 
     // TODO: Perhaps make this an extension
@@ -943,18 +1201,22 @@ public class TypeConstraintSystem
 
     public class CaseCollectionFilters
     {
-        public SpecificCaseFilter Default { get; set; }
-            = new(null, FilterType.None);
+        // This structure, although slightly questionable, is reasonable and
+        // helpful for the IsSubsetOf and IsSupersetOf implementations
+
+        public FilterType Default { get; private set; } = FilterType.None;
 
         // We should not need anything too specialized for this one
-        public SortedList<uint, SpecificCaseFilter> Remaining { get; set; } = [];
+        public SortedList<uint, SpecificCaseFilter> Remaining { get; } = [];
+
+        private readonly SortedList<uint?, int> _setterCounters = [];
 
         public bool HasAnyExplicitlyPermittedCase
         {
             get
             {
-                return Default.FilterType is FilterType.Permitted
-                    || Remaining.Values.Any(s => s.FilterType is FilterType.Permitted);
+                return Default is FilterType.Permitted
+                    || Remaining.Values.Any(static s => s.FilterType is FilterType.Permitted);
             }
         }
 
@@ -962,9 +1224,23 @@ public class TypeConstraintSystem
         {
             get
             {
-                return Default.FilterType is FilterType.Exclusive
-                    || Remaining.Values.Any(s => s.FilterType is FilterType.Exclusive);
+                return Default is FilterType.Exclusive
+                    || Remaining.Values.Any(static s => s.FilterType is FilterType.Exclusive);
             }
+        }
+
+        public IReadOnlyList<uint?> GetDuplicateSpecializationValues()
+        {
+            return _setterCounters
+                .Where(s => s.Value > 1)
+                .Select(Selectors.KeyReturner)
+                .ToArray();
+        }
+
+        private void RegisterValueAssignment(uint? value)
+        {
+            int counter = _setterCounters.ValueOrDefault(value);
+            _setterCounters[value] = counter + 1;
         }
 
         public void Set(uint? value, FilterType filterType)
@@ -976,11 +1252,12 @@ public class TypeConstraintSystem
             var value = filter.Value;
             if (value is null)
             {
-                Default = filter;
+                Default = filter.FilterType;
                 return;
             }
 
             Remaining[value!.Value] = filter;
+            RegisterValueAssignment(value);
         }
 
         public FilterType FilterTypeForValue(int value)
@@ -993,7 +1270,7 @@ public class TypeConstraintSystem
             if (found)
                 return filter.FilterType;
 
-            return Default.FilterType;
+            return Default;
         }
 
         public bool IsSubsetOf(CaseCollectionFilters other)
@@ -1002,8 +1279,8 @@ public class TypeConstraintSystem
         }
         public bool IsSupersetOf(CaseCollectionFilters other)
         {
-            var defaultLeft = Default.FilterType;
-            var defaultRight = other.Default.FilterType;
+            var defaultLeft = Default;
+            var defaultRight = other.Default;
             var isSuperset = FilterIsSupersetOf(defaultLeft, defaultRight);
             if (!isSuperset)
                 return false;

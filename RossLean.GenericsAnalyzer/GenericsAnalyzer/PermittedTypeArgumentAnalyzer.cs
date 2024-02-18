@@ -472,7 +472,9 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                 foreach (var attribute in attributes)
                     MarkErroneousConstrainedTypesAttribute(typeSystemDiagnostics, attribute);
             }
-            void MarkErroneousConstrainedTypesAttribute(TypeConstraintSystemDiagnostics typeSystemDiagnostics, AttributeData attribute)
+            void MarkErroneousConstrainedTypesAttribute(
+                TypeConstraintSystemDiagnostics typeSystemDiagnostics,
+                AttributeData attribute)
             {
                 if (attribute.ApplicationSyntaxReference?.GetSyntax() is not AttributeSyntax attributeSyntaxNode)
                     return;
@@ -488,34 +490,73 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                         return;
                     }
 
-                    // Profiles do not care about this diagnostic because they are not being directly used
-                    // TODO: This will have to emit a diagnostic on the generic parameter if it can be
-                    // applied but no such attribute is directly attributed to that element
+                    // Profiles do not care about these no permitted type diagnostics
+                    // because they are not being directly used
+                    // TODO: This will have to emit a diagnostic on the generic parameter
+                    // if it can be applied but no such attribute is directly attributed
+                    // to that element
                     case nameof(OnlyPermitSpecifiedTypesAttribute):
                     {
-                        // TODO: Refactor this into a system diagnostic that will be accessible
                         if (systemBuilder.HasNoPermittedTypes)
                             context.ReportDiagnostic(Diagnostics.CreateGA0012(attributeSyntaxNode));
                         return;
                     }
+                    case nameof(OnlyPermitSpecifiedTypeGroupsAttribute):
+                    {
+                        if (typeSystemDiagnostics.HasRedundantOnlyPermitAttributeByExclusion)
+                        {
+                            context.ReportDiagnostic(Diagnostics.CreateGA0042(attributeSyntaxNode));
+                        }
+                        if (systemBuilder.HasNoPermittedTypes)
+                        {
+                            context.ReportDiagnostic(Diagnostics.CreateGA0048(attributeSyntaxNode));
+                        }
 
-                    // Finally, the only attributes that demand being processed are the ones applying
-                    // constraints
+                        return;
+                    }
+
+                    // We handle specified type constraints here
                     case nameof(PermittedTypesAttribute):
                     case nameof(PermittedBaseTypesAttribute):
                     case nameof(ProhibitedTypesAttribute):
                     case nameof(ProhibitedBaseTypesAttribute):
+                        AnalyzeSpecifiedTypeConstraintsInAttribute(
+                            typeSystemDiagnostics,
+                            attribute,
+                            attributeSyntaxNode);
                         break;
 
-                    // This excludes the profile-related attributes from having their arguments marked
-                    // as erroneous, since they are not related to constraining types and already have
-                    // been processed earlier
+                    // We handle type group filters here
+                    case nameof(FilterInterfacesAttribute):
+                    case nameof(FilterEnumsAttribute):
+                    case nameof(FilterDelegatesAttribute):
+                    case nameof(FilterAbstractClassesAttribute):
+                    case nameof(FilterSealedClassesAttribute):
+                    case nameof(FilterRecordClassesAttribute):
+                    case nameof(FilterRecordStructsAttribute):
+                    case nameof(FilterGenericTypesAttribute):
+                    case nameof(FilterArrayTypesAttribute):
+                        AnalyzeTypeGroupFilterAttribute(
+                            typeSystemDiagnostics,
+                            attribute,
+                            attributeSyntaxNode);
+                        break;
+
+                    // This excludes the profile-related attributes from having their
+                    // arguments marked as erroneous, since they are not related to constraining
+                    // types and have already been processed earlier
                     // Furthermore, any other attributes should not correlate with type argument
                     // constraints, unless they are related to logic
                     default:
                         return;
                 }
+            }
 
+            void AnalyzeSpecifiedTypeConstraintsInAttribute(
+                TypeConstraintSystemDiagnostics typeSystemDiagnostics,
+                AttributeData attribute,
+                AttributeSyntax attributeSyntaxNode)
+            {
                 if (finiteTypeCount is 1)
                     context.ReportDiagnostic(Diagnostics.CreateGA0013(attributeSyntaxNode, parameter));
 
@@ -530,7 +571,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                     var typeConstant = typeConstants[argumentIndex];
                     var argumentNode = argumentNodes[argumentIndex];
 
-                    var type = typeSystemDiagnostics.GetDiagnosticType(typeConstant);
+                    var diagnosticType = typeSystemDiagnostics.GetDiagnosticType(typeConstant);
 
                     var diagnostic = CreateReportDiagnostic();
                     if (diagnostic is not null)
@@ -538,7 +579,7 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
 
                     Diagnostic CreateReportDiagnostic()
                     {
-                        switch (type)
+                        switch (diagnosticType)
                         {
                             case TypeConstraintSystemDiagnosticType.Conflicting:
                                 return Diagnostics.CreateGA0002(argumentNode, parameter, typeConstant);
@@ -571,7 +612,60 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                     }
                 }
             }
+
+            void AnalyzeTypeGroupFilterAttribute(
+                TypeConstraintSystemDiagnostics typeSystemDiagnostics,
+                AttributeData attribute,
+                AttributeSyntax attributeSyntaxNode)
+            {
+                var groupFilterIdentifier = GetTypeGroupFilterIdentifier(attribute);
+
+                var diagnosticTypes = typeSystemDiagnostics.GetTypeGroupFilterDiagnostics(
+                    groupFilterIdentifier);
+
+                foreach (var diagnosticType in diagnosticTypes)
+                {
+                    var diagnostic = CreateReportDiagnostic(diagnosticType);
+                    if (diagnostic is not null)
+                        context.ReportDiagnostic(diagnostic);
+                }
+
+                Diagnostic CreateReportDiagnostic(TypeGroupFilterDiagnosticType diagnosticType)
+                {
+                    switch (diagnosticType)
+                    {
+                        case TypeGroupFilterDiagnosticType.UnavailablePermissionByExclusion:
+                            return Diagnostics.CreateGA0040(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.IncompatibleExclusiveFilter:
+                            return Diagnostics.CreateGA0041(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.UnavailablePermissionByGenericConstraints:
+                            return Diagnostics.CreateGA0043(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.RedundantProhibitionByExclusion:
+                            return Diagnostics.CreateGA0044(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.IneffectiveFilterWithNoPermittedBaseTypes:
+                            return Diagnostics.CreateGA0045(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.RedundantSpecialization:
+                            return Diagnostics.CreateGA0046(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.DuplicateSpecialization:
+                            return Diagnostics.CreateGA0047(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.ConflictingExclusiveSpecialization:
+                            return Diagnostics.CreateGA0049(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.RedundantDefaultCaseByExclusiveSpecialization:
+                            return Diagnostics.CreateGA0050(attributeSyntaxNode);
+                    }
+                    return null;
+                }
+            }
         }
+
         // Analyze the inherited type constraints from local type parameters
         AnalyzeInheritedTypeConstraints();
         genericNames.FinalizeGenericSymbol(declaringSymbol);
@@ -933,6 +1027,42 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
     private static IEnumerable<ITypeSymbol> GetAttributeTypeArrayArgument(AttributeData data)
     {
         return data.ConstructorArguments[0].Values.Select(c => c.Value as ITypeSymbol);
+    }
+
+    private static ITypeGroupFilterIdentifier GetTypeGroupFilterIdentifier(
+        AttributeData attribute)
+    {
+        var name = attribute.AttributeClass.Name;
+        switch (name)
+        {
+            case nameof(FilterInterfacesAttribute):
+                return BasicTypeGroupFilter.Interface;
+            case nameof(FilterDelegatesAttribute):
+                return BasicTypeGroupFilter.Delegate;
+            case nameof(FilterEnumsAttribute):
+                return BasicTypeGroupFilter.Enum;
+            case nameof(FilterAbstractClassesAttribute):
+                return BasicTypeGroupFilter.AbstractClass;
+            case nameof(FilterSealedClassesAttribute):
+                return BasicTypeGroupFilter.SealedClass;
+            case nameof(FilterRecordClassesAttribute):
+                return BasicTypeGroupFilter.RecordClass;
+            case nameof(FilterRecordStructsAttribute):
+                return BasicTypeGroupFilter.RecordStruct;
+
+            case nameof(FilterGenericTypesAttribute):
+            {
+                uint? arity = TryGetArityOrRankValueArgument<uint>(attribute);
+                return GenericTypeGroupFilter.DefaultOrSpecialized(arity);
+            }
+            case nameof(FilterArrayTypesAttribute):
+            {
+                uint? rank = TryGetArityOrRankValueArgument<uint>(attribute);
+                return ArrayTypeGroupFilter.DefaultOrSpecialized(rank);
+            }
+        }
+
+        throw new InvalidOperationException("This is thought to be unreachable");
     }
 
     private static TypeConstraintRule? ParseAttributeRule(AttributeData data)

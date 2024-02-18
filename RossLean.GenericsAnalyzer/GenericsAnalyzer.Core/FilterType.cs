@@ -1,6 +1,5 @@
 ﻿namespace RossLean.GenericsAnalyzer.Core;
 
-// Aliases like that are great
 /// <summary>
 /// Determines the filter type to apply to a specific entity.
 /// </summary>

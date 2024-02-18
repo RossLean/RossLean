@@ -237,6 +237,51 @@ internal static class Diagnostics
         return Diagnostic.Create(Storage[0030]!, attributeNode?.GetLocation());
     }
 
+    public static Diagnostic CreateGA0040(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0040]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0041(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0041]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0042(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0042]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0043(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0043]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0044(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0044]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0045(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0045]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0046(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0046]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0047(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0047]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0048(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0048]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0049(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0049]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0050(AttributeSyntax attributeSyntaxNode)
+    {
+        return Diagnostic.Create(Storage[0050]!, attributeSyntaxNode?.GetLocation());
+    }
+
     private static string CreateReasonSuffix(string? reason)
     {
         if (string.IsNullOrEmpty(reason))

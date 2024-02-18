@@ -17,6 +17,7 @@ public sealed class TypeConstraintSystemDiagnostics
     private readonly ErroneousElementDictionary<DiagnosticType, ITypeSymbol> erroneousTypes;
     private readonly ErroneousElementDictionary<InheritanceDiagnosticType, ITypeParameterSymbol> erroneousInheritedTypeParameters;
     private readonly ErroneousElementDictionary<InheritanceDiagnosticType, INamedTypeSymbol> erroneousInheritedProfiles;
+    private readonly ErroneousElementDictionary<TypeGroupFilterDiagnosticType, ITypeGroupFilterIdentifier> erroneousTypeGroupFilters;
 
     // DiagnosticType
     private ISet<ITypeSymbol> ConflictingTypes => erroneousTypes[DiagnosticType.Conflicting];
@@ -36,27 +37,49 @@ public sealed class TypeConstraintSystemDiagnostics
     private ISet<INamedTypeSymbol> ConflictingInheritedProfiles => erroneousInheritedProfiles[InheritanceDiagnosticType.Conflicting];
     private ISet<INamedTypeSymbol> MultipleOfDistinctGroupInheritedProfiles => erroneousInheritedProfiles[InheritanceDiagnosticType.MultipleOfDistinctGroup];
 
+    // TypeGroupFilterDiagnosticType
+    private ISet<ITypeGroupFilterIdentifier> UnavailablePermissionByExclusionTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.UnavailablePermissionByExclusion];
+    private ISet<ITypeGroupFilterIdentifier> RedundantProhibitionByExclusionTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.RedundantProhibitionByExclusion];
+    private ISet<ITypeGroupFilterIdentifier> UnavailablePermissionByGenericConstraintsTypeGroupFilters =>
+        erroneousTypeGroupFilters[
+            TypeGroupFilterDiagnosticType.UnavailablePermissionByGenericConstraints];
+    private ISet<ITypeGroupFilterIdentifier> IncompatibleExclusiveFilterTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.IncompatibleExclusiveFilter];
+    private ISet<ITypeGroupFilterIdentifier> RedundantSpecializationTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.RedundantSpecialization];
+    private ISet<ITypeGroupFilterIdentifier> DuplicateSpecializationTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.DuplicateSpecialization];
+    private ISet<ITypeGroupFilterIdentifier> ConflictingExclusiveSpecializationTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.ConflictingExclusiveSpecialization];
+    private ISet<ITypeGroupFilterIdentifier> RedundantDefaultCaseByExclusiveSpecializationTypeGroupFilters =>
+        erroneousTypeGroupFilters[
+            TypeGroupFilterDiagnosticType.RedundantDefaultCaseByExclusiveSpecialization];
+
+    public bool HasRedundantOnlyPermitAttributeByExclusion { get; private set; }
+
     public bool HasErroneousTypes => erroneousTypes.Values.AnyDeep();
     public bool HasErroneousInheritedTypeParameters => erroneousInheritedTypeParameters.Values.AnyDeep();
     public bool HasErroneousInheritedProfiles => erroneousInheritedProfiles.Values.AnyDeep();
+    public bool HasErroneousTypeGroupFilters => erroneousTypeGroupFilters.Values.AnyDeep();
 
     public TypeConstraintSystemDiagnostics()
     {
-        erroneousTypes = new ErroneousElementDictionary<DiagnosticType, ITypeSymbol>();
-        erroneousInheritedTypeParameters = new ErroneousElementDictionary<InheritanceDiagnosticType, ITypeParameterSymbol>();
-        erroneousInheritedProfiles = new ErroneousElementDictionary<InheritanceDiagnosticType, INamedTypeSymbol>();
+        erroneousTypes = new();
+        erroneousInheritedTypeParameters = new();
+        erroneousInheritedProfiles = new();
+        erroneousTypeGroupFilters = new();
     }
     public TypeConstraintSystemDiagnostics(TypeConstraintSystemDiagnostics other)
-        : this()
     {
-        foreach (var kvp in other.erroneousTypes)
-            erroneousTypes[kvp.Key].AddRange(kvp.Value);
+        erroneousTypes = new(other.erroneousTypes);
+        erroneousInheritedTypeParameters = new(other.erroneousInheritedTypeParameters);
+        erroneousInheritedProfiles = new(other.erroneousInheritedProfiles);
+        erroneousTypeGroupFilters = new(other.erroneousTypeGroupFilters);
 
-        foreach (var kvp in other.erroneousInheritedTypeParameters)
-            erroneousInheritedTypeParameters[kvp.Key].AddRange(kvp.Value);
-
-        foreach (var kvp in other.erroneousInheritedProfiles)
-            erroneousInheritedProfiles[kvp.Key].AddRange(kvp.Value);
+        HasRedundantOnlyPermitAttributeByExclusion
+            = other.HasRedundantOnlyPermitAttributeByExclusion;
     }
 
     public ISet<ITypeSymbol> GetTypesForDiagnosticType(DiagnosticType diagnosticType)
@@ -92,6 +115,10 @@ public sealed class TypeConstraintSystemDiagnostics
 
         erroneousInheritedTypeParameters.AddRange(typeDiagnostics.erroneousInheritedTypeParameters);
         erroneousInheritedProfiles.AddRange(typeDiagnostics.erroneousInheritedProfiles);
+        erroneousTypeGroupFilters.AddRange(typeDiagnostics.erroneousTypeGroupFilters);
+
+        HasRedundantOnlyPermitAttributeByExclusion
+            = typeDiagnostics.HasRedundantOnlyPermitAttributeByExclusion;
     }
 
     #region Register Type Diagnostics
@@ -198,6 +225,69 @@ public sealed class TypeConstraintSystemDiagnostics
     }
     #endregion
 
+    #region Register Type Group Filter Diagnostics
+
+    public void RegisterUnavailablePermissionByExclusion(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        UnavailablePermissionByExclusionTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterRedundantProhibitionByExclusion(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        RedundantProhibitionByExclusionTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterRedundantSpecialization(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        RedundantSpecializationTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterDuplicateSpecialization(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        DuplicateSpecializationTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterUnavailablePermissionByGenericConstraints(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        UnavailablePermissionByGenericConstraintsTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterIncompatibleExclusionFilters(
+        IEnumerable<ITypeGroupFilterIdentifier> identifiers)
+    {
+        foreach (var identifier in identifiers)
+        {
+            IncompatibleExclusiveFilterTypeGroupFilters.Add(identifier);
+        }
+    }
+
+    public void RegisterConflictingExclusiveSpecializationFilters(
+        IEnumerable<ISpecializableTypeGroupFilterIdentifier> identifiers)
+    {
+        foreach (var identifier in identifiers)
+        {
+            ConflictingExclusiveSpecializationTypeGroupFilters.Add(identifier);
+        }
+    }
+
+    public void RegisterRedundantDefaultCaseByExclusiveSpecialization(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        RedundantDefaultCaseByExclusiveSpecializationTypeGroupFilters.Add(identifier);
+    }
+
+    public void SetHasRedundantOnlyPermitAttributeByExclusion()
+    {
+        HasRedundantOnlyPermitAttributeByExclusion = true;
+    }
+
+    #endregion
+
     public DiagnosticType GetDiagnosticType(ITypeSymbol type)
     {
         return erroneousTypes.GetDiagnosticType(type);
@@ -211,10 +301,10 @@ public sealed class TypeConstraintSystemDiagnostics
         return erroneousInheritedProfiles.GetDiagnosticType(profile);
     }
 
-    private static HashSet<T> NewSymbolHashSet<T>()
-        where T : class, ISymbol
+    public IEnumerable<TypeGroupFilterDiagnosticType> GetTypeGroupFilterDiagnostics(
+        ITypeGroupFilterIdentifier identifier)
     {
-        return new HashSet<T>(comparer: SymbolEqualityComparer.Default);
+        return erroneousTypeGroupFilters.GetDiagnosticTypes(identifier);
     }
 
     private static DiagnosticType GetDiagnosticType(ConstraintRule rule)
@@ -229,19 +319,41 @@ public sealed class TypeConstraintSystemDiagnostics
 
     // Aliasing is not possible just yet
     private class ErroneousElementDictionary<TDiagnosticType, TElement> : Dictionary<TDiagnosticType, ISet<TElement>>
-        where TDiagnosticType : struct, Enum
+        where TDiagnosticType : unmanaged, Enum
     {
-        private static readonly TDiagnosticType[] diagnosticTypes = EnumHelpers.GetValues<TDiagnosticType>();
+        private static readonly TDiagnosticType[] diagnosticTypes
+            = EnumHelpers.GetValues<TDiagnosticType>();
 
         public ErroneousElementDictionary()
         {
             foreach (var type in diagnosticTypes)
-                Add(type, new HashSet<TElement>());
+            {
+                if (type is 0)
+                    continue;
 
-            Remove(default);
+                Add(type, new HashSet<TElement>());
+            }
+        }
+        public ErroneousElementDictionary(
+            ErroneousElementDictionary<TDiagnosticType, TElement> other)
+        {
+            foreach (var kvp in other)
+            {
+                Add(kvp.Key, new HashSet<TElement>(kvp.Value));
+            }
         }
 
         // There is no need to check for the key's value because the valid value is the default value
-        public TDiagnosticType GetDiagnosticType(TElement type) => this.FirstOrDefault(kvp => kvp.Value.Contains(type)).Key;
+        public TDiagnosticType GetDiagnosticType(TElement type)
+        {
+            return this.FirstOrDefault(kvp => kvp.Value.Contains(type)).Key;
+        }
+
+        public IEnumerable<TDiagnosticType> GetDiagnosticTypes(TElement type)
+        {
+            return this
+                .Where(kvp => kvp.Value.Contains(type))
+                .Select(s => s.Key);
+        }
     }
 }

@@ -322,10 +322,10 @@
     <value>Redundant type group prohibition</value>
   </data>
   <data name="GA0045_MessageFormat" xml:space="preserve">
-    <value>OnlyPermitSpecifiedTypes prohibits all types that are not explicitly permitted and will therefore ignore all type group filters</value>
+    <value>There are no permitted base types along with OnlyPermitSpecifiedTypes which prohibits all types except for the exact ones</value>
   </data>
   <data name="GA0045_Title" xml:space="preserve">
-    <value>Ineffective type group filter attribute when OnlyPermitSpecifiedTypes is present</value>
+    <value>Ineffective type group filter attribute with no permitted base types</value>
   </data>
   <data name="GA0046_MessageFormat" xml:space="preserve">
     <value>The filter specialization does not differentiate from the general case of the filter</value>
@@ -338,5 +338,23 @@
   </data>
   <data name="GA0047_Title" xml:space="preserve">
     <value>Duplicate filter specialization</value>
+  </data>
+  <data name="GA0048_MessageFormat" xml:space="preserve">
+    <value>The presence of the attribute prohibits all type groups that are not explicitly permitted</value>
+  </data>
+  <data name="GA0048_Title" xml:space="preserve">
+    <value>No permitted type groups while using OnlyPermitSpecifiedTypeGroups</value>
+  </data>
+  <data name="GA0049_MessageFormat" xml:space="preserve">
+    <value>Multiple conflicting specializations are marked as exclusive, which are incompatible</value>
+  </data>
+  <data name="GA0049_Title" xml:space="preserve">
+    <value>Multiple conflicting specializations are marked as exclusive</value>
+  </data>
+  <data name="GA0050_MessageFormat" xml:space="preserve">
+    <value>An existing specialization is marked as exclusive, which prohibits all other specializations</value>
+  </data>
+  <data name="GA0050_Title" xml:space="preserve">
+    <value>Redundant default case filter with exclusive specialization</value>
   </data>
 </root>

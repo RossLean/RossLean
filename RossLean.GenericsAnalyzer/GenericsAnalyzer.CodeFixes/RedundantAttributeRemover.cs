@@ -19,14 +19,22 @@ public class RedundantAttributeRemover : GACodeFixProvider
         Instance[0014],
         Instance[0015],
         Instance[0016],
+        Instance[0040],
         Instance[0042],
         Instance[0044],
         Instance[0045],
         Instance[0046],
+        Instance[0050],
     ];
 
-    protected override async Task<Document> PerformCodeFixActionAsync(CodeFixContext context, SyntaxNode syntaxNode, CancellationToken cancellationToken)
+    protected override async Task<Document> PerformCodeFixActionAsync(
+        CodeFixContext context,
+        SyntaxNode syntaxNode,
+        CancellationToken cancellationToken)
     {
-        return await context.RemoveAttributeCleanAsync(syntaxNode as AttributeSyntax, SyntaxRemoveOptions.KeepNoTrivia, cancellationToken);
+        return await context.RemoveAttributeCleanAsync(
+            syntaxNode as AttributeSyntax,
+            SyntaxRemoveOptions.KeepNoTrivia,
+            cancellationToken);
     }
 }
