@@ -691,7 +691,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The filter specialization does not differentiate from the general case of the filter.
+        ///   Looks up a localized string similar to The specialized filter does not differentiate from the unspecialized filter.
         /// </summary>
         internal static string GA0046_MessageFormat {
             get {
@@ -700,7 +700,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Redundant filter specialization.
+        ///   Looks up a localized string similar to Redundant specialized filter.
         /// </summary>
         internal static string GA0046_Title {
             get {
@@ -709,7 +709,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Another attribute covers the same filter specialization case.
+        ///   Looks up a localized string similar to Another attribute already filters the same specializable type group.
         /// </summary>
         internal static string GA0047_MessageFormat {
             get {
@@ -718,7 +718,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate filter specialization.
+        ///   Looks up a localized string similar to Duplicate specializable filter.
         /// </summary>
         internal static string GA0047_Title {
             get {
@@ -772,7 +772,7 @@ namespace RossLean.GenericsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Redundant default case filter with exclusive specialization.
+        ///   Looks up a localized string similar to Redundant unspecialized filter with exclusive specialized filter.
         /// </summary>
         internal static string GA0050_Title {
             get {

@@ -29,15 +29,17 @@ Rule ID                   | Category        | Severity
 [GA0028](rules/GA0028.md) | API Restriction | Error
 [GA0029](rules/GA0029.md) | Validity        | Error
 [GA0030](rules/GA0030.md) | Design          | Warning
-[GA0040](rules/GA0040.md) | Design          | Warning
-[GA0041](rules/GA0041.md) | Design          | Warning
-[GA0042](rules/GA0042.md) | Design          | Warning
-[GA0043](rules/GA0043.md) | Design          | Warning
-[GA0044](rules/GA0044.md) | Design          | Warning
-[GA0045](rules/GA0045.md) | Design          | Warning
-[GA0046](rules/GA0046.md) | Design          | Warning
-[GA0047](rules/GA0047.md) | Design          | Warning
-[GA0048](rules/GA0048.md) | Design          | Warning
+[GA0040](rules/GA0040.md) | Validity        | Error
+[GA0041](rules/GA0041.md) | Validity        | Error
+[GA0042](rules/GA0042.md) | Brevity         | Warning
+[GA0043](rules/GA0043.md) | Validity        | Error
+[GA0044](rules/GA0044.md) | Brevity         | Warning
+[GA0045](rules/GA0045.md) | Brevity         | Warning
+[GA0046](rules/GA0046.md) | Brevity         | Warning
+[GA0047](rules/GA0047.md) | Validity        | Error
+[GA0048](rules/GA0048.md) | Validity        | Error
+[GA0049](rules/GA0049.md) | Validity        | Error
+[GA0050](rules/GA0050.md) | Brevity         | Warning
 
 ## Discontinued Rules
 Some rules have been discontinued. They may have been embodied into other rules, whose ID(s) are listed alongside the discontinued ones'.

@@ -328,16 +328,16 @@
     <value>Ineffective type group filter attribute with no permitted base types</value>
   </data>
   <data name="GA0046_MessageFormat" xml:space="preserve">
-    <value>The filter specialization does not differentiate from the general case of the filter</value>
+    <value>The specialized filter does not differentiate from the unspecialized filter</value>
   </data>
   <data name="GA0046_Title" xml:space="preserve">
-    <value>Redundant filter specialization</value>
+    <value>Redundant specialized filter</value>
   </data>
   <data name="GA0047_MessageFormat" xml:space="preserve">
-    <value>Another attribute covers the same filter specialization case</value>
+    <value>Another attribute already filters the same specializable type group</value>
   </data>
   <data name="GA0047_Title" xml:space="preserve">
-    <value>Duplicate filter specialization</value>
+    <value>Duplicate specializable filter</value>
   </data>
   <data name="GA0048_MessageFormat" xml:space="preserve">
     <value>The presence of the attribute prohibits all type groups that are not explicitly permitted</value>
