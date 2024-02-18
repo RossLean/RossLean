@@ -12,4 +12,6 @@ public enum TypeGroupFilterDiagnosticType
     DuplicateSpecialization,
     ConflictingExclusiveSpecialization,
     RedundantDefaultCaseByExclusiveSpecialization,
+    IneffectiveTypeGroupFilter,
+    InvalidSpecialization,
 }

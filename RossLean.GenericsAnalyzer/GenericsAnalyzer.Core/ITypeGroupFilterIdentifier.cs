@@ -35,6 +35,7 @@ public sealed record class GenericTypeGroupFilter(uint? Arity)
     bool ISpecializableTypeGroupFilterIdentifier.IsSpecialized
         => Arity is not null;
 
+    public static GenericTypeGroupFilter Specialized(uint rank) => new(rank);
     public static GenericTypeGroupFilter DefaultOrSpecialized(uint? arity)
     {
         if (arity is null)
@@ -54,6 +55,7 @@ public sealed record class ArrayTypeGroupFilter(uint? Rank)
     bool ISpecializableTypeGroupFilterIdentifier.IsSpecialized
         => Rank is not null;
 
+    public static ArrayTypeGroupFilter Specialized(uint rank) => new(rank);
     public static ArrayTypeGroupFilter DefaultOrSpecialized(uint? rank)
     {
         if (rank is null)

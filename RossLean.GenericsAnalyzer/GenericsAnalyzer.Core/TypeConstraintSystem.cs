@@ -131,6 +131,7 @@ public class TypeConstraintSystem
         var exclusives = filterInstanceDictionary.ValueOrDefault(FilterType.Exclusive);
         var permitted = filterInstanceDictionary.ValueOrDefault(FilterType.Permitted);
         var prohibited = filterInstanceDictionary.ValueOrDefault(FilterType.Prohibited);
+
         if (exclusives is not null)
         {
             // Incompatible exclusive filter analysis
@@ -204,6 +205,34 @@ public class TypeConstraintSystem
         ReportDuplicateSpecializationIdentifiers(
             Filters.Arrays,
             ArrayTypeGroupFilter.DefaultOrSpecialized);
+
+        // Invalid specialization analysis
+
+        ReportInvalidSpecializationIdentifiers(
+            Filters.GenericTypes,
+            static s => s is 0,
+            GenericTypeGroupFilter.Specialized);
+        ReportInvalidSpecializationIdentifiers(
+            Filters.Arrays,
+            static s => s is 0,
+            ArrayTypeGroupFilter.Specialized);
+    }
+
+    private void ReportInvalidSpecializationIdentifiers<T>(
+        CaseCollectionFilters caseCollectionFilters,
+        Func<uint, bool> invalidSpecializationFilter,
+        Func<uint, T> identifierSelector)
+        where T : ISpecializableTypeGroupFilterIdentifier
+    {
+        var specializations = caseCollectionFilters.Remaining.Keys;
+        var invalidSpecializations = specializations
+            .Where(invalidSpecializationFilter)
+            .Select(identifierSelector);
+        
+        foreach (var identifier in invalidSpecializations)
+        {
+            systemDiagnostics.RegisterInvalidSpecialization(identifier);
+        }
     }
 
     private void ReportDuplicateSpecializationIdentifiers<T>(

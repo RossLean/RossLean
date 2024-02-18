@@ -56,6 +56,10 @@ public sealed class TypeConstraintSystemDiagnostics
     private ISet<ITypeGroupFilterIdentifier> RedundantDefaultCaseByExclusiveSpecializationTypeGroupFilters =>
         erroneousTypeGroupFilters[
             TypeGroupFilterDiagnosticType.RedundantDefaultCaseByExclusiveSpecialization];
+    private ISet<ITypeGroupFilterIdentifier> IneffectiveTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.IneffectiveTypeGroupFilter];
+    private ISet<ITypeGroupFilterIdentifier> InvalidSpecializationTypeGroupFilters =>
+        erroneousTypeGroupFilters[TypeGroupFilterDiagnosticType.InvalidSpecialization];
 
     public bool HasRedundantOnlyPermitAttributeByExclusion { get; private set; }
 
@@ -279,6 +283,18 @@ public sealed class TypeConstraintSystemDiagnostics
         ITypeGroupFilterIdentifier identifier)
     {
         RedundantDefaultCaseByExclusiveSpecializationTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterIneffectiveTypeGroupFilter(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        IneffectiveTypeGroupFilters.Add(identifier);
+    }
+
+    public void RegisterInvalidSpecialization(
+        ITypeGroupFilterIdentifier identifier)
+    {
+        InvalidSpecializationTypeGroupFilters.Add(identifier);
     }
 
     public void SetHasRedundantOnlyPermitAttributeByExclusion()

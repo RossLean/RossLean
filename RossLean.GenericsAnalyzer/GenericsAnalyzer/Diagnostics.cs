@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RossLean.GenericsAnalyzer.Core;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -280,6 +281,24 @@ internal static class Diagnostics
     public static Diagnostic CreateGA0050(AttributeSyntax attributeSyntaxNode)
     {
         return Diagnostic.Create(Storage[0050]!, attributeSyntaxNode?.GetLocation());
+    }
+    public static Diagnostic CreateGA0051(
+        AttributeArgumentSyntax attributeArgumentNode,
+        FilterType filterType)
+    {
+        return Diagnostic.Create(
+            Storage[0051]!,
+            attributeArgumentNode?.GetLocation(),
+            filterType.ToString());
+    }
+    public static Diagnostic CreateGA0052(
+        AttributeArgumentSyntax attributeArgumentNode,
+        uint specializationValue)
+    {
+        return Diagnostic.Create(
+            Storage[0052]!,
+            attributeArgumentNode?.GetLocation(),
+            specializationValue.ToString());
     }
 
     private static string CreateReasonSuffix(string? reason)

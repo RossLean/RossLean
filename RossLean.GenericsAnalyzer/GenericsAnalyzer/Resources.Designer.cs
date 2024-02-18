@@ -779,5 +779,41 @@ namespace RossLean.GenericsAnalyzer {
                 return ResourceManager.GetString("GA0050_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The filter type &apos;{0}&apos; will not affect the filtered types.
+        /// </summary>
+        internal static string GA0051_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0051_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ineffective type group filter.
+        /// </summary>
+        internal static string GA0051_Title {
+            get {
+                return ResourceManager.GetString("GA0051_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specialization value &apos;{0}&apos; is not valid for this type group.
+        /// </summary>
+        internal static string GA0052_MessageFormat {
+            get {
+                return ResourceManager.GetString("GA0052_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid type group specialization.
+        /// </summary>
+        internal static string GA0052_Title {
+            get {
+                return ResourceManager.GetString("GA0052_Title", resourceCulture);
+            }
+        }
     }
 }

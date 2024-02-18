@@ -32,4 +32,10 @@ public static class IReadOnlyListExtensions
         value = default;
         return false;
     }
+
+    public static T? AtIndexOrDefault<T>(this IReadOnlyList<T> source, int index)
+    {
+        TryGetAtIndex(source, index, out var value);
+        return value;
+    }
 }

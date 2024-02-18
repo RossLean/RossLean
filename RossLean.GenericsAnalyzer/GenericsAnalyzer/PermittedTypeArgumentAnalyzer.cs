@@ -623,11 +623,46 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
                 var diagnosticTypes = typeSystemDiagnostics.GetTypeGroupFilterDiagnostics(
                     groupFilterIdentifier);
 
+                var argumentList = attributeSyntaxNode.ArgumentList;
+                var arguments = argumentList.Arguments;
+                var constructorArguments = attribute.ConstructorArguments;
+
+                ReportSyntaxRelatedDiagnostics();
+
                 foreach (var diagnosticType in diagnosticTypes)
                 {
                     var diagnostic = CreateReportDiagnostic(diagnosticType);
                     if (diagnostic is not null)
                         context.ReportDiagnostic(diagnostic);
+                }
+
+                void ReportSyntaxRelatedDiagnostics()
+                {
+                    // This diagnostic is reported here because the type constraint
+                    // system does not recognize invalid filter types
+                    // and thus is not held accountable for reporting diagnostics
+                    // of invalid filter values like FilterType.None
+
+                    var firstTypedConstantArgument = constructorArguments
+                        .AtIndexOrDefault(0);
+                    if (firstTypedConstantArgument.Kind is TypedConstantKind.Enum)
+                    {
+                        var value = firstTypedConstantArgument
+                            .EnumValueOrDefault<FilterType, byte>();
+
+                        bool isIneffectiveFilter = value
+                            is not FilterType.Prohibited
+                            and not FilterType.Permitted
+                            and not FilterType.Exclusive;
+
+                        if (isIneffectiveFilter)
+                        {
+                            var diagnostic = Diagnostics.CreateGA0051(
+                                arguments.AtIndexOrDefault(0),
+                                value);
+                            context.ReportDiagnostic(diagnostic);
+                        }
+                    }
                 }
 
                 Diagnostic CreateReportDiagnostic(TypeGroupFilterDiagnosticType diagnosticType)
@@ -660,6 +695,21 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
 
                         case TypeGroupFilterDiagnosticType.RedundantDefaultCaseByExclusiveSpecialization:
                             return Diagnostics.CreateGA0050(attributeSyntaxNode);
+
+                        case TypeGroupFilterDiagnosticType.InvalidSpecialization:
+                        {
+                            uint specializationValue = 0;
+                            var specializationArgument = constructorArguments
+                                .AtIndexOrDefault(1);
+                            if (specializationArgument.Kind is TypedConstantKind.Primitive
+                                && specializationArgument.Value is uint argumentValue)
+                            {
+                                specializationValue = argumentValue;
+                            }
+                            return Diagnostics.CreateGA0052(
+                                arguments.AtIndexOrDefault(1),
+                                specializationValue);
+                        }
                     }
                     return null;
                 }
@@ -907,8 +957,11 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
             return true;
         }
 
-        // It is assured that the analyzer cares about the attribute from the base interface check
-        var rule = ParseAttributeRule(attributeData).Value;
+        var nullableRule = ParseAttributeRule(attributeData);
+        if (nullableRule is null)
+            return false;
+
+        var rule = nullableRule.Value;
 
         // The arguments will be always stored as an array, regardless of their count
         // If an error is thrown here, common causes could be:
@@ -940,9 +993,11 @@ public class PermittedTypeArgumentAnalyzer : CSharpDiagnosticAnalyzer
         bool hasArgument = attribute.ConstructorArguments
             .TryGetAtIndex(0, out var filterTypeConstant);
 
-        var filterType = filterTypeConstant.EnumValueOrDefault<FilterType, byte>();
+        // Allow processing FilterType.None
+        const FilterType invalidFilter = (FilterType)100;
+        var filterType = filterTypeConstant.EnumValueOrDefault<FilterType, byte>(invalidFilter);
 
-        if (filterType is not FilterType.None)
+        if (filterType is not invalidFilter)
         {
             switch (attributeClassName)
             {

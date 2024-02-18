@@ -40,6 +40,8 @@ Rule ID                   | Category        | Severity
 [GA0048](rules/GA0048.md) | Validity        | Error
 [GA0049](rules/GA0049.md) | Validity        | Error
 [GA0050](rules/GA0050.md) | Brevity         | Warning
+[GA0051](rules/GA0051.md) | Brevity         | Warning
+[GA0052](rules/GA0052.md) | Validity        | Error
 
 ## Discontinued Rules
 Some rules have been discontinued. They may have been embodied into other rules, whose ID(s) are listed alongside the discontinued ones'.
