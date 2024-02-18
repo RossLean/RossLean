@@ -511,5 +511,111 @@ public sealed class GA0001_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
 
         AssertDiagnosticsWithUsings(testCode);
     }
+
+    [Test]
+    public void TypeGroupFilters_03()
+    {
+        const string testCode =
+            $$"""
+            {{_typeGroupFilterTestTypes}}
+
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<↓IEnumerable<string>>();
+                    new Generic<↓IEnumerable>();
+                    new Generic<↓string>();
+                    new Generic<↓Abstract>();
+                    new Generic<↓NonAbstractNonSealed>();
+                    new Generic<↓NonAbstractNonSealedRecordClass>();
+                    new Generic<↓AbstractRecordClass>();
+                    new Generic<↓SealedRecordClass>();
+                    new Generic<↓Struct>();
+                    new Generic<↓RecordStruct>();
+                    new Generic<↓ExampleEnum>();
+                    new Generic<↓ExampleDelegate>();
+                }
+            }
+
+            partial class Generic
+            <
+                [FilterAbstractClasses(FilterType.Exclusive)]
+                [FilterRecordClasses(FilterType.Exclusive)]
+                T
+            >;
+            
+            partial class Generic
+            <
+                [FilterGenericTypes(FilterType.Exclusive)]
+                T
+            >;
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
+
+    [Test]
+    public void TypeGroupFilters_04()
+    {
+        const string testCode =
+            $$"""
+            {{_typeGroupFilterTestTypes}}
+
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<IEnumerable<string>>();
+                    new Generic<Generic2<string, string>>();
+                    new Generic<Generic3<string, string, string>>();
+                    new Generic<↓IEnumerable>();
+                    new Generic<↓string>();
+                    new Generic<↓Abstract>();
+                }
+            }
+
+            partial class Generic
+            <
+                [FilterGenericTypes(FilterType.Exclusive)]
+                T
+            >;
+
+            partial class Generic2<T1, T2>;
+            partial class Generic3<T1, T2, T3>;
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
+
+    [Test]
+    public void TypeGroupFilters_05()
+    {
+        const string testCode =
+            $$"""
+            {{_typeGroupFilterTestTypes}}
+
+            class Program
+            {
+                static void Main()
+                {
+                    new Generic<↓IEnumerable<string>>();
+                    new Generic<string[]>();
+                    new Generic<string[,]>();
+                    new Generic<↓IEnumerable>();
+                    new Generic<↓string>();
+                    new Generic<↓Abstract>();
+                }
+            }
+
+            partial class Generic
+            <
+                [FilterArrayTypes(FilterType.Exclusive)]
+                T
+            >;
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
     #endregion
 }

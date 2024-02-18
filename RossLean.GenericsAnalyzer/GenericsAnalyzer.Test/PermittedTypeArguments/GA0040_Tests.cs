@@ -55,4 +55,26 @@ public sealed class GA0040_Tests : PermittedTypeArgumentAnalyzerDiagnosticTests
 
         AssertDiagnosticsWithUsings(testCode);
     }
+
+    [Test]
+    public void PartialClashingPermissionsWithExclusive()
+    {
+        const string testCode =
+            """
+            partial class GenericType
+            <
+                [FilterArrayTypes(FilterType.Exclusive)]
+                [↓FilterGenericTypes(FilterType.Permitted)]
+                T
+            >;
+
+            partial class GenericType
+            <
+                [↓FilterAbstractClasses(FilterType.Permitted)]
+                T
+            >;
+            """;
+
+        AssertDiagnosticsWithUsings(testCode);
+    }
 }

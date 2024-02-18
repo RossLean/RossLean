@@ -548,8 +548,11 @@ public class TypeConstraintSystem
     {
         var typeKind = type.TypeKind;
 
+        bool explicitlyPermitted = false;
+
         var permission = GetFinalPermissionResult(
             type,
+            ref explicitlyPermitted,
             [
                 new(
                     static (type, typeKind)
@@ -592,25 +595,53 @@ public class TypeConstraintSystem
                 ),
             ]);
 
-        if (permission is not PermissionResult.Unknown)
+        if (permission is PermissionResult.Prohibited)
             return permission;
 
         // We assume that the rules have been validated beforehand and the appropriate
         // errors will have been reported to the user about mixing invalid specialized
         // generic arity and array rank filters
         int arity = type.GetArity();
-        var genericFilter = Filters.GenericTypes.FilterTypeForValue(arity);
-        permission = PermissionOfFilter(genericFilter, true);
-        if (permission is not PermissionResult.Unknown)
+        bool isGeneric = arity > 0;
+        permission = CalculatePermissionResult(arity, isGeneric, Filters.GenericTypes);
+
+        if (permission is PermissionResult.Prohibited)
             return permission;
 
-        if (type is IArrayTypeSymbol arrayType)
+        if (permission is PermissionResult.Permitted)
+            explicitlyPermitted = true;
+
+        var arrayType = type as IArrayTypeSymbol;
+        bool isArray = arrayType is not null;
+        int rank = arrayType?.Rank ?? 0;
+        permission = CalculatePermissionResult(rank, isArray, Filters.Arrays);
+
+        if (permission is PermissionResult.Prohibited)
+            return permission;
+
+        if (permission is PermissionResult.Permitted)
+            explicitlyPermitted = true;
+
+        if (explicitlyPermitted)
+            return PermissionResult.Permitted;
+
+        return PermissionResult.Unknown;
+    }
+
+    private PermissionResult CalculatePermissionResult(
+        int value, bool matches,
+        CaseCollectionFilters filters)
+    {
+        if (matches)
         {
-            int rank = arrayType.Rank;
-            var arrayFilter = Filters.GenericTypes.FilterTypeForValue(arity);
-            permission = PermissionOfFilter(arrayFilter, true);
-            if (permission is not PermissionResult.Unknown)
-                return permission;
+            var filter = filters.FilterTypeForValue(value);
+            return PermissionOfFilter(filter, true);
+        }
+        else
+        {
+            bool hasAnyExclusive = filters.HasAnyExclusiveCase;
+            if (hasAnyExclusive)
+                return PermissionResult.Prohibited;
         }
 
         return PermissionResult.Unknown;
@@ -618,10 +649,10 @@ public class TypeConstraintSystem
 
     private PermissionResult GetFinalPermissionResult(
         ITypeSymbol type,
+        ref bool explicitlyPermitted,
         params FilterTypeAndMatcher[] filterMatchers)
     {
         var typeKind = type.TypeKind;
-        bool explicitlyPermitted = false;
         foreach (var (matcher, filterType) in filterMatchers)
         {
             var result = matcher(type, typeKind);
