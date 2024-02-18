@@ -355,6 +355,6 @@
     <value>An existing specialization is marked as exclusive, which prohibits all other specializations</value>
   </data>
   <data name="GA0050_Title" xml:space="preserve">
-    <value>Redundant default case filter with exclusive specialization</value>
+    <value>Redundant unspecialized filter with exclusive specialized filter</value>
   </data>
 </root>
