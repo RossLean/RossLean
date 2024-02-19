@@ -11,7 +11,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn>1701;1702;RS2002;RS2003</NoWarn>
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    The analyzer does not detect the pattern that RoseLynn uses, and falsely reports that diagnostics
+    are not reported by any analyzer
+  -->
+  <PropertyGroup>
+    <NoWarn>RS2002;RS2003</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +29,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="RoseLynn" Version="0.6.4.1" />
+    <PackageReference Include="RoseLynn.VS2019" Version="0.6.4.1" />
     <PackageReference Include="RoseLynn.Analyzers" Version="0.6.4.1" />
+    <PackageReference Include="RoseLynn.Analyzers.VS2019" Version="0.6.4.1" />
   </ItemGroup>
 
   <ItemGroup>

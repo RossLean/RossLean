@@ -9,7 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="RoseLynn" Version="0.6.4.1" />
+    <PackageReference Include="RoseLynn.VS2019" Version="0.6.4.1" />
     <PackageReference Include="RoseLynn.CodeFixes" Version="0.6.4.1" />
+    <PackageReference Include="RoseLynn.CodeFixes.VS2019" Version="0.6.4.1" />
   </ItemGroup>
 
   <ItemGroup>

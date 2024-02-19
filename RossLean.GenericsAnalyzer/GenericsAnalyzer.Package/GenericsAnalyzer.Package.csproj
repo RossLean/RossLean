@@ -3,19 +3,28 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <SuppressDependenciesWhenPacking>false</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>GenericsAnalyzer</PackageId>
+    <PackageId>RossLean.GenericsAnalyzer</PackageId>
     <Authors>Alex Kalfakakos,RossLean</Authors>
-    <Version>1.4.0-rc1</Version>
-    <PackageVersion>1.4.0-rc1</PackageVersion>
+    <Version>1.4.0</Version>
+    <PackageVersion>1.4.0</PackageVersion>
     <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.GenericsAnalyzer</RepositoryUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Description>A Roslyn analyzer that empowers usage of generics through attributes.</Description>
-    <PackageReleaseNotes>Transfer to RossLean, more components</PackageReleaseNotes>
+    <PackageReleaseNotes>New features:
+- Type group filters
+- Provide a reason for prohibited types
+
+Breaking changes:
+- Namespace changed from GenericsAnalyzer to RossLean.GenericsAnalyzer.
+
+This package was moved over to the RossLean organization, along with other upcoming packages.
+Make sure to check out the repository for further information.
+    </PackageReleaseNotes>
     <Copyright>© 2021-2024 Alex Kalfakakos, © 2024 RossLean</Copyright>
     <PackageTags>roslyn, analyzer, generics, constraints, restrictions</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -27,8 +36,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GenericsAnalyzer.CodeFixes\GenericsAnalyzer.CodeFixes.csproj" />
-    <ProjectReference Include="..\GenericsAnalyzer\GenericsAnalyzer.csproj" />
+    <ProjectReference Include="..\GenericsAnalyzer.CodeFixes\GenericsAnalyzer.CodeFixes.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\GenericsAnalyzer\GenericsAnalyzer.csproj" PrivateAssets="all" />
+
+    <!-- This ensures that the RossLean.GenericsAnalyzer.Core package is automatically added -->
+    <ProjectReference Include="..\GenericsAnalyzer.Core\GenericsAnalyzer.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,17 +49,26 @@
 
   <!-- Add the required packages -->
   <ItemGroup>
+    <PackageReference Include="Garyon" Version="0.3.3" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="RoseLynn.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="RoseLynn.Analyzers.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
+    <PackageReference Include="RoseLynn.CodeFixes.VS2019" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="RoseLynn" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="RoseLynn.Analyzers" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
     <PackageReference Include="RoseLynn.CodeFixes" Version="0.6.4.1" PrivateAssets="all" GeneratePathProperty="true" />
 
-    <None Include="$(PKGRoseLynn)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
-    <None Include="$(PKGRoseLynn_Analyzers)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
-    <None Include="$(PKGRoseLynn_CodeFixes)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
+    <None Include="$(PKGGaryon)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGRoseLynn_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGRoseLynn_Analyzers_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGRoseLynn_CodeFixes_VS2019)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGRoseLynn)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGRoseLynn_Analyzers)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(PKGRoseLynn_CodeFixes)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     
     <TfmSpecificPackageFile Include="$(OutputPath)\GenericsAnalyzer.dll" PackagePath="analyzers/dotnet/cs" />
     <TfmSpecificPackageFile Include="$(OutputPath)\GenericsAnalyzer.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
     <TfmSpecificPackageFile Include="$(OutputPath)\GenericsAnalyzer.Core.dll" PackagePath="analyzers/dotnet/cs" />
+    <TfmSpecificPackageFile Include="$(OutputPath)\RossLean.Common.Base.dll" PackagePath="analyzers/dotnet/cs" />
   </ItemGroup>
 
 </Project>
