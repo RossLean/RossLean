@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run GenericsAnalyzer Tests
 
 on: [push, pull_request]
 
