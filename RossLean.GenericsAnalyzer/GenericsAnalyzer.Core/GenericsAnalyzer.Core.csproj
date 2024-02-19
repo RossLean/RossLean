@@ -11,20 +11,21 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>Alex Kalfakakos,RossLean</Authors>
     <Product>GenericsAnalyzer.Core</Product>
-    <PackageId>GenericsAnalyzer.Core</PackageId>
+    <PackageId>RossLean.GenericsAnalyzer.Core</PackageId>
     <Copyright>© 2021-2024 Alex Kalfakakos, © 2024 RossLean</Copyright>
     <Description>The core components for using the generics analyzer.</Description>
     <RepositoryUrl>https://github.com/RossLean/RossLean/tree/master/RossLean.GenericsAnalyzer</RepositoryUrl>
     <PackageTags>roslyn, analyzer, generics, constraints</PackageTags>
-    <Version>1.4.0-rc1</Version>
-    <PackageVersion>1.4.0-rc1</PackageVersion>
+    <Version>1.4.0</Version>
+    <PackageVersion>1.4.0</PackageVersion>
     <RootNamespace>RossLean.GenericsAnalyzer.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Garyon" Version="0.3.3" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
-    <PackageReference Include="RoseLynn" Version="0.6.4.1" />
+    <PackageReference Include="RoseLynn" Version="0.6.4.1" PrivateAssets="all" />
+    <PackageReference Include="RoseLynn.VS2019" Version="0.6.4.1" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
